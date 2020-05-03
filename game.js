@@ -43,6 +43,7 @@ window.addEventListener("keydown", (e) => {
 		}
 		case 32: /*space*/{
 			keyState.space = true;
+			e.preventDefault();
 			break;
 		}
 	}
@@ -68,6 +69,7 @@ window.addEventListener("keyup", (e) => {
 		}
 		case 32: /*space*/{
 			keyState.space = false;
+			e.preventDefault();
 			break;
 		}
 	}
