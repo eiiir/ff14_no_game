@@ -75,19 +75,39 @@ const render = () => {
 
 };
 
+const endGame = () => {
+	gameActive = false;
+	keyState.w = keyState.a = keyState.s = keyState.d = false;
+	alert(`You died. Score: ${timerDom.innerText}`);
+	startTime = -1;
+};
+
+const isGoku = () => document.getElementById("remove_saku").checked;
+
+const renderSaku = () => {
+	fieldDom.style.border = isGoku() ? "3px solid orangered" : "3px solid royalblue";
+};
+
 const movePlayer = () => {
 	if(keyState.w) {
-		player.y = Math.max(0, player.y - speed); 
+		player.y = player.y - speed;
 	}
 	if (keyState.s) {
-		player.y = Math.min(fieldSize, player.y + speed)
+		player.y = player.y + speed;
 	}
 	if (keyState.a) {
-		player.x = Math.max(0, player.x - speed);
+		player.x = player.x - speed;
 	}
 	if (keyState.d) {
-		player.x = Math.min(fieldSize, player.x + speed);
+		player.x = player.x + speed;
 	}
+	if (isGoku() && (player.x < 0 || player.x >= fieldSize || player.y < 0 || player.y >= fieldSize)) {
+		endGame();
+	}
+	player.x = Math.max(0, player.x);
+	player.x = Math.min(fieldSize, player.x);
+	player.y = Math.max(0, player.y);
+	player.y = Math.min(fieldSize, player.y);
 }
 
 
