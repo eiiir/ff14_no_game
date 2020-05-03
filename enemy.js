@@ -40,20 +40,16 @@ const EnemyGen = {
    },
    carterizeAcc: 0,
    addCarterize: () => {
-      const time = Date.now() - startTime;
-      if (time < 10000) {
-         return;
-      }
       EnemyGen.carterizeAcc += 1;
-      if (EnemyGen.carterizeAcc % 300 === 0) {
-         const type = EnemyGen.carterizeAcc / 60 % 4;
-         const delay = 1000;
+      if (EnemyGen.carterizeAcc >= 600 && EnemyGen.carterizeAcc % 300 === 0) {
+         const type = Math.floor(Math.random() * 4);
+         const delay = 5000;
          const left = [-100, -100, 0, fieldSize/2][type];
          const top = [0, fieldSize/2, -100, -100][type];
          const width = [fieldSize+200, fieldSize+200, fieldSize/2, fieldSize/2][type];
          const height = [fieldSize/2, fieldSize/2, fieldSize+200, fieldSize+200][type];
-         const style = `left:${left}px;top:${top}px;height:${height}px;width:${width}px;background-color:rgba(0,165,255,0.8);z-index:1;display:inline-block;position:absolute;border-color:red;border:solid 1px blue;`;
-         const hitFunc = (px, py) => left <= px && px < left + width && top <= py && py < top + height;
+         const style = `left:${left}px;top:${top}px;height:${height}px;width:${width}px;background-color:rgba(255,255,0,0.7);z-index:1;display:inline-block;position:absolute;border-color:red;border:solid 1px blue;`;
+         const hitFunc = (px, py) => left <= px && px <= left + width && top <= py && py <= top + height;
 
          EnemyGen.addEnemy(delay, style, hitFunc);
       }
@@ -64,7 +60,7 @@ const EnemyGen = {
       fieldDom.appendChild(enemy);
       const addedTime = Date.now();
       const intervalId = setInterval(() => {
-         enemy.style.backgroundColor = `rgba(255, ${Math.floor(255 - 255 * (Date.now() - addedTime) / delay)}, 0, 0.7)`; 
+         enemy.style.backgroundColor = `rgba(255, ${Math.floor(255 - 255 * (Date.now() - addedTime) / delay)}, 0, 0.7)`;
       }, 100)
       setTimeout(() => {
          if (gameActive && hitFunc(player.x, player.y)) {
