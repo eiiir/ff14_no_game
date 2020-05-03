@@ -70,8 +70,9 @@ const render = () => {
 		timerDom.innerText = `Score: ${Date.now() - startTime}`;
 
 	}
-	playerDom.style.left = `${player.x - playerRadius}px`;
-	playerDom.style.top = `${player.y - playerRadius}px`;
+	playerDom.style.left = `${player.x - playerDom.offsetWidth/2}px`;
+	playerDom.style.top = `${player.y - playerDom.offsetHeight/2}px`;
+
 };
 
 const movePlayer = () => {
