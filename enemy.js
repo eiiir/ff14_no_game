@@ -66,10 +66,7 @@ const EnemyGen = {
          if (gameActive && hitFunc(player.x, player.y)) {
             player.hp--;
             if (player.hp <= 0) {
-               gameActive = false;
-               keyState.w = keyState.a = keyState.s = keyState.d = false;
-               alert(`You died. Score: ${timerDom.innerText}`);
-               startTime = -1;
+                endGame();
                EnemyGen.initialize();
                initialize();
             }

@@ -96,6 +96,18 @@ const render = () => {
 
 let sprintRecast = 0;
 let sprintBuff = 0;
+const endGame = () => {
+	gameActive = false;
+	keyState.w = keyState.a = keyState.s = keyState.d = false;
+	alert(`You died. Score: ${timerDom.innerText}`);
+	startTime = -1;
+};
+
+const isGoku = () => document.getElementById("remove_saku").checked;
+
+const renderSaku = () => {
+	fieldDom.style.border = isGoku() ? "3px solid orangered" : "3px solid royalblue";
+};
 
 const movePlayer = () => {
 	if (keyState.space && sprintRecast === 0) {
@@ -108,17 +120,24 @@ const movePlayer = () => {
 		console.log(actualSpeed);
 	}
 	if(keyState.w) {
-		player.y = Math.max(0, player.y - actualSpeed);
+		player.y = player.y - actualSpeed;
 	}
 	if (keyState.s) {
-		player.y = Math.min(fieldSize, player.y + actualSpeed)
+		player.y = player.y + actualSpeed;
 	}
 	if (keyState.a) {
-		player.x = Math.max(0, player.x - actualSpeed);
+		player.x = player.x - actualSpeed;
 	}
 	if (keyState.d) {
-		player.x = Math.min(fieldSize, player.x + actualSpeed);
+		player.x = player.x + actualSpeed;
 	}
+	if (isGoku() && (player.x < 0 || player.x >= fieldSize || player.y < 0 || player.y >= fieldSize)) {
+		endGame();
+	}
+	player.x = Math.max(0, player.x);
+	player.x = Math.min(fieldSize, player.x);
+	player.y = Math.max(0, player.y);
+	player.y = Math.min(fieldSize, player.y);
 }
 
 const tick = () => {
