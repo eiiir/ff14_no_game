@@ -68,6 +68,7 @@ const EnemyGen = {
             if (player.hp <= 0) {
                 endGame();
                EnemyGen.initialize();
+               initialize();
             }
          }
          fieldDom.removeChild(enemy);
