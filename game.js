@@ -103,6 +103,8 @@ const endGame = () => {
 	keyState.w = keyState.a = keyState.s = keyState.d = false;
 	alert(`You died. Score: ${timerDom.innerText}`);
 	startTime = -1;
+
+	LeaderBoard.sendScore(parseInt(timerDom.innerText.substr(7)));
 };
 
 const isGoku = () => document.getElementById("remove_saku").checked;

@@ -3,6 +3,24 @@
 		
 	</head>
 	<body>
+		<!-- Firebase -->
+		<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
+
+		<script>
+			// Your web app's Firebase configuration
+			var firebaseConfig = {
+				apiKey: "AIzaSyCDPq5eSwR7iBljLqixnKVd74ODiPIcufI",
+				authDomain: "ff14-no-game-score.firebaseapp.com",
+				databaseURL: "https://ff14-no-game-score.firebaseio.com",
+				projectId: "ff14-no-game-score",
+				storageBucket: "ff14-no-game-score.appspot.com",
+				messagingSenderId: "559219615292",
+				appId: "1:559219615292:web:31210fa03c606b8f7a8539"
+			};
+			// Initialize Firebase
+			firebase.initializeApp(firebaseConfig);
+		</script>
 		<div style="width:600px;height:600px;background-color: #eee;position:relative;border: 3px solid royalblue" id="field">
 			<div style='position:absolute;width:50px;height:50px;top:275px;left:275px;z-index:1000;' id="player">
 				<div style="position:relative;">
@@ -25,7 +43,11 @@
 			</div>
 		</div>
 		<div><input type="checkbox" id="remove_saku" onclick="renderSaku()">極</div>
+		<br/>
+		<div style="font-weight: bold">LeaderBoard</div>
+		<div id="leaderboard"></div>
 		<script src="./enemy.js"></script>
 		<script src="./game.js"></script>
+		<script src="./leaderboard.js"></script>
 	</body>
 </html>
