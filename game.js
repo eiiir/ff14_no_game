@@ -88,7 +88,6 @@ const movePlayer = () => {
 	if (keyState.d) {
 		player.x = Math.min(fieldSize, player.x + speed);
 	}
-	console.log(keyState);
 }
 
 
