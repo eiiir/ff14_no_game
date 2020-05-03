@@ -71,6 +71,7 @@ const EnemyGen = {
                alert(`You died. Score: ${timerDom.innerText}`);
                startTime = -1;
                EnemyGen.initialize();
+               initialize();
             }
          }
          fieldDom.removeChild(enemy);
