@@ -117,7 +117,6 @@ const movePlayer = () => {
 	let actualSpeed = sprintBuff > 0 ? speed * 1.3 : speed;
 	if ((keyState.w - keyState.s) && (keyState.a - keyState.d)) {
 		actualSpeed /= Math.sqrt(2);
-		console.log(actualSpeed);
 	}
 	if(keyState.w) {
 		player.y = player.y - actualSpeed;
