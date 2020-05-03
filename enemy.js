@@ -1,12 +1,18 @@
 const EnemyGen = {
+   initialize: () => {
+      EnemyGen.fireIIIAcc = 0;
+      EnemyGen.eruptionAcc = 0;
+      EnemyGen.carterizeAcc = 0;
+   },
    maybeAddEnemy: () => {
       EnemyGen.addFireIII();
       EnemyGen.addEruption();
+      EnemyGen.addCarterize();
    },
    fireIIIAcc: 0,
    addFireIII: () => {
       const time = Date.now() - startTime;
-      EnemyGen.fireIIIAcc += 0.05 + Math.min(0.8, time / 500000);
+      EnemyGen.fireIIIAcc += 0.02 + Math.min(0.18, time / 500000);
       const radius = 150;
       const duration = 3000;
       if (EnemyGen.fireIIIAcc >= 1) {
@@ -18,19 +24,39 @@ const EnemyGen = {
          EnemyGen.addEnemy(duration, style, hitFunc);
       }
    },
-   EruptionAcc: 0,
+   eruptionAcc: 0,
    addEruption: () => {
-      EnemyGen.EruptionAcc += 1/60;
+      EnemyGen.eruptionAcc += 1/60;
       const radius = 150;
       const duration = 3000;
-      if (EnemyGen.EruptionAcc >= 1) {
-         EnemyGen.EruptionAcc -= 1;
+      if (EnemyGen.eruptionAcc >= 1) {
+         EnemyGen.eruptionAcc -= 1;
          const x = player.x, y = player.y;
          const style = `left:${x - radius}px;top:${y - radius}px;border-radius:${radius}px;height:${radius*2}px;width:${radius*2}px;background-color:rgba(255,165,0,0.8);z-index:1;display:inline-block;position:absolute;border-color:red;border:solid 1px red;`;
          const hitFunc = (px, py) => (px - x)**2 + (py - y)**2 < radius**2;
          EnemyGen.addEnemy(duration, style, hitFunc);
       }
 
+   },
+   carterizeAcc: 0,
+   addCarterize: () => {
+      const time = Date.now() - startTime;
+      if (time < 10000) {
+         return;
+      }
+      EnemyGen.carterizeAcc += 1;
+      if (EnemyGen.carterizeAcc % 300 === 0) {
+         const type = EnemyGen.carterizeAcc / 60 % 4;
+         const delay = 1000;
+         const left = [-100, -100, 0, fieldSize/2][type];
+         const top = [0, fieldSize/2, -100, -100][type];
+         const width = [fieldSize+200, fieldSize+200, fieldSize/2, fieldSize/2][type];
+         const height = [fieldSize/2, fieldSize/2, fieldSize+200, fieldSize+200][type];
+         const style = `left:${left}px;top:${top}px;height:${height}px;width:${width}px;background-color:rgba(0,165,255,0.8);z-index:1;display:inline-block;position:absolute;border-color:red;border:solid 1px blue;`;
+         const hitFunc = (px, py) => left <= px && px < left + width && top <= py && py < top + height;
+
+         EnemyGen.addEnemy(delay, style, hitFunc);
+      }
    },
    addEnemy: (delay, style, hitFunc) => {
       const enemy = document.createElement("div");
@@ -43,7 +69,8 @@ const EnemyGen = {
                gameActive = false;
                keyState.w = keyState.a = keyState.s = keyState.d = false;
                alert(`You died. Score: ${timerDom.innerText}`);
-               startTime = -1
+               startTime = -1;
+               EnemyGen.initialize();
             }
          }
          fieldDom.removeChild(enemy);
