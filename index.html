@@ -24,30 +24,47 @@
 		<div style="width:600px;height:600px;background-color: #eee;position:relative;border: 3px solid royalblue" id="field">
 			<div style='position:absolute;width:50px;height:50px;top:275px;left:275px;z-index:1000;' id="player">
 				<div style="position:relative;">
-					<img src="whm.png" width="50px" height="50px">
+					<img src="img/whm.png" width="50px" height="50px" id="playerIcon">
 					<div style="position: absolute;top:-40px;display:flex;justify-content:center;width:100%">
 						<div id="sprint-buff" style="display:none">
-							<div><img src="sprint.png" width="25px" height="25px"></div>
+							<div><img src="img/sprint.png" width="25px" height="25px"></div>
 							<div id="sprint-buff-time" style="display:flex;justify-content:center;font-weight:bold;font-size:small">5</div>
 						</div>
 					</div>
-					<div style="left:20px; top:20px; width:10px;height:10px;background-color: blue; border-radius:5px; position:absolute;"></div>
+					<div style="left:20px; top:20px; width:10px;height:10px;background-color: dodgerblue; border-radius:5px; position:absolute;"></div>
 				</div>
 			</div>
 			<div style="position:absolute;bottom:0;left:0;z-index:50" id="timer">WASD</div>
 		</div>
 		<div id="ability">
 			<div style="position:relative;">
-				<div><img src="sprint.png" width="50px" height="50px"><span>[Space]</span></div>
+				<div><img src="img/sprint.png" width="50px" height="50px"><span>[Space]</span></div>
 				<div id="ability-sprint-time" style="position: absolute;top:0;display:flex;width:50px;height:50px;justify-content:center;align-items:flex-end;text-stroke:1px #FFF;-webkit-text-stroke: 1px #FFF"></div>
 			</div>
 		</div>
 		<div><input type="checkbox" id="remove_saku" onclick="renderSaku()">極</div>
+		<select name="icon" id="playerIconSelect">
+			<option value="whm" selected>白魔道士</option>
+			<option value="ast">占星術師</option>
+			<option value="blm">黒魔道士</option>
+			<option value="brd">吟遊詩人</option>
+			<option value="drg">竜騎士</option>
+			<option value="drk">暗黒騎士</option>
+			<option value="mcn">機工士</option>
+			<option value="nin">忍者</option>
+			<option value="pld">ナイト</option>
+			<option value="sch">学者</option>
+			<option value="smn">召喚士</option>
+			<option value="war">戦士</option>
+			<option value="mnk">モンク</option>
+		</select>
 		<br/>
 		<div style="font-weight: bold">LeaderBoard</div>
 		<div id="leaderboard"></div>
 		<script src="./enemy.js"></script>
 		<script src="./game.js"></script>
 		<script src="./leaderboard.js"></script>
+		<script src="./player.js"></script>
+		<script>afterEverythingLoaded();</script>
 	</body>
 </html>

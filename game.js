@@ -13,6 +13,20 @@ const keyState = {
 	space: false,
 };
 
+const cookies = {};
+document.cookie.split(";").forEach((cookie) => {
+	const [key, value] = cookie.split("=");
+	if (key && value) {
+		cookies[key] = value;
+	} 
+});
+
+const afterEverythingLoaded = () => {
+	if (cookies["job"]) {
+		Player.changeJob(cookies["job"]);
+	}
+}
+
 const initialize = () => {
 	sprintRecast = 0;
 	sprintBuff = 0;
@@ -101,7 +115,7 @@ let sprintBuff = 0;
 const endGame = () => {
 	gameActive = false;
 	keyState.w = keyState.a = keyState.s = keyState.d = false;
-	alert(`You died. Score: ${timerDom.innerText}`);
+	alert(`You died. ${timerDom.innerText}`);
 	startTime = -1;
 
 	LeaderBoard.sendScore(parseInt(timerDom.innerText.substr(7)));
