@@ -30,6 +30,12 @@
 							<div><img src="img/sprint.png" width="25px" height="25px"></div>
 							<div id="sprint-buff-time" style="display:flex;justify-content:center;font-weight:bold;font-size:small">5</div>
 						</div>
+						<div id="holy-debuff" style="display:none">
+							<div><img src="holy.png" width="25px" height="25px"></div>
+						</div>
+						<div id="darkness-debuff" style="display:none">
+							<div><img src="darkness.png" width="25px" height="25px"></div>
+						</div>
 					</div>
 					<div style="left:20px; top:20px; width:10px;height:10px;background-color: dodgerblue; border-radius:5px; position:absolute;"></div>
 				</div>
@@ -43,6 +49,10 @@
 			</div>
 		</div>
 		<div><input type="checkbox" id="remove_saku" onclick="renderSaku()">極</div>
+		<div><select id="stage">
+			<option value="normal">ノーマル</option>
+			<option value="e7s" selected>共鳴3層</option>
+		</select></div>
 		<select name="icon" id="playerIconSelect">
 			<option value="whm" selected>白魔道士</option>
 			<option value="ast">占星術師</option>
@@ -62,6 +72,7 @@
 		<div style="font-weight: bold">LeaderBoard</div>
 		<div id="leaderboard"></div>
 		<script src="./enemy.js"></script>
+		<script src="./enemy_e7s.js"></script>
 		<script src="./game.js"></script>
 		<script src="./leaderboard.js"></script>
 		<script src="./player.js"></script>

@@ -5,6 +5,10 @@ const EnemyGen = {
       EnemyGen.carterizeAcc = 0;
    },
    maybeAddEnemy: () => {
+      if (!initialized) {
+         EnemyGen.initialize();
+         initialize();
+      }
       EnemyGen.addFireIII();
       EnemyGen.addEruption();
       EnemyGen.addCarterize();
@@ -66,9 +70,7 @@ const EnemyGen = {
          if (gameActive && hitFunc(player.x, player.y)) {
             player.hp--;
             if (player.hp <= 0) {
-                endGame();
-               EnemyGen.initialize();
-               initialize();
+               endGame();
             }
          }
          fieldDom.removeChild(enemy);

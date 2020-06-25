@@ -12,13 +12,14 @@ const keyState = {
 	d: false,
 	space: false,
 };
+let initialized = false;
 
 const cookies = {};
 document.cookie.split(";").forEach((cookie) => {
 	const [key, value] = cookie.split("=");
 	if (key && value) {
 		cookies[key] = value;
-	} 
+	}
 });
 
 const afterEverythingLoaded = () => {
@@ -30,6 +31,7 @@ const afterEverythingLoaded = () => {
 const initialize = () => {
 	sprintRecast = 0;
 	sprintBuff = 0;
+	initialized = true;
 };
 
 let gameActive = false;
@@ -96,13 +98,7 @@ const sprintBuffTimeDom = document.getElementById("sprint-buff-time");
 const abilitySprintTimeDom = document.getElementById("ability-sprint-time");
 const timerDom = document.getElementById("timer");
 const render = () => {
-	if (gameActive) {
-		if (startTime < 0) {
-			startTime = Date.now();
-		}
-		timerDom.innerText = `Score: ${Date.now() - startTime}`;
-
-	}
+	timerDom.innerText = `Score: ${Date.now() - startTime}`;
 	playerDom.style.left = `${player.x - playerDom.offsetWidth/2}px`;
 	playerDom.style.top = `${player.y - playerDom.offsetHeight/2}px`;
 	sprintBuffTimeDom.innerText = Math.floor(sprintBuff + 0.5);
@@ -114,11 +110,15 @@ let sprintRecast = 0;
 let sprintBuff = 0;
 const endGame = () => {
 	gameActive = false;
+	initialized = false;
 	keyState.w = keyState.a = keyState.s = keyState.d = false;
 	alert(`You died. ${timerDom.innerText}`);
 	startTime = -1;
 
-	LeaderBoard.sendScore(parseInt(timerDom.innerText.substr(7)));
+	const stage = document.getElementById('stage').value;
+	if (stage === 'normal') {
+		LeaderBoard.sendScore(parseInt(timerDom.innerText.substr(7)));
+	}
 };
 
 const isGoku = () => document.getElementById("remove_saku").checked;
@@ -158,15 +158,26 @@ const movePlayer = () => {
 }
 
 const tick = () => {
+	if (startTime < 0) {
+		startTime = Date.now();
+	}
 	sprintBuff = Math.max(0, sprintBuff - 1/60);
 	sprintRecast = Math.max(0, sprintRecast - 1/60);
+	const stage = document.getElementById('stage').value;
+	switch (stage) {
+		case 'e7s':
+			EnemyGenE7S.maybeAddEnemy(fieldDom);
+			break;
+		default:
+			EnemyGen.maybeAddEnemy(fieldDom);
+			break;
+	}
 }
 
 setInterval(() => {
 	if (gameActive) {
-		EnemyGen.maybeAddEnemy(fieldDom);
-		movePlayer();
 		tick();
+		movePlayer();
 		render();
 	}
 }, 17);
