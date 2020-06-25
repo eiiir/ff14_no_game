@@ -93,10 +93,10 @@ const EnemyGenE7S = {
       } else if (EnemyGenE7S.phase == 5 && time >= 24000) {
          EnemyGenE7S.addBeam(1, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(2, EnemyGenE7S.redElemental ? 'darkness' : 'holy');
-         EnemyGenE7S.addBeam(3, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(4, EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(5, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(6, EnemyGenE7S.redElemental ? 'darkness' : 'holy');
+         EnemyGenE7S.addBeam(7, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addDeadZone();
          EnemyGenE7S.redElemental = EnemyGenE7S.pattern2 ? EnemyGenE7S.redElemental : !EnemyGenE7S.redElemental;
          setTimeout(() => EnemyGenE7S.swapElemental(), 20);
@@ -119,10 +119,10 @@ const EnemyGenE7S = {
       } else if (EnemyGenE7S.phase == 7 && time >= 33000) {
          EnemyGenE7S.addBeam(1, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(2, EnemyGenE7S.redElemental ? 'darkness' : 'holy');
-         EnemyGenE7S.addBeam(3, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(4, EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(5, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(6, EnemyGenE7S.redElemental ? 'darkness' : 'holy');
+         EnemyGenE7S.addBeam(7, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addDeadZone();
          EnemyGenE7S.redElemental = EnemyGenE7S.pattern3 ? EnemyGenE7S.redElemental : !EnemyGenE7S.redElemental;
          setTimeout(() => EnemyGenE7S.swapElemental(), 20);
@@ -139,10 +139,10 @@ const EnemyGenE7S = {
       } else if (EnemyGenE7S.phase == 9 && time >= 42000) {
          EnemyGenE7S.addBeam(1, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(2, EnemyGenE7S.redElemental ? 'darkness' : 'holy');
-         EnemyGenE7S.addBeam(3, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(4, EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(5, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addBeam(6, EnemyGenE7S.redElemental ? 'darkness' : 'holy');
+         EnemyGenE7S.addBeam(7, !EnemyGenE7S.redElemental ? 'darkness' : 'holy');
          EnemyGenE7S.addDeadZone();
          setTimeout(() => EnemyGenE7S.swapElemental(), 20);
          EnemyGenE7S.phase = 10;
