@@ -11,6 +11,7 @@ const EnemyGenE12S = {
         { color: "purple", x: 480, y: 10 },
         { color: "red", x: 555, y: 10 }
     ],
+    deadlySwamps: [],
 
     initStock: () => {
         const r = Math.floor(Math.random() * 5);
@@ -25,6 +26,9 @@ const EnemyGenE12S = {
     },
 
     initialize: () => {
+        while (fieldDom.children.length > 1) {
+            fieldDom.removeChild(fieldDom.children[1]);
+        }
         EnemyGenE12S.phase = 0;
         EnemyGenE12S.role = Math.floor(Math.random() * 8);
         EnemyGenE12S.handMode = Math.floor(Math.random() * 2);
@@ -44,6 +48,7 @@ const EnemyGenE12S = {
         }
         EnemyGenE12S.initStock();
         speed = 1.2;
+        EnemyGenE12S.deadlySwamps = [];
     },
 
     maybeAddEnemy: (fieldDom) => {
@@ -52,6 +57,25 @@ const EnemyGenE12S = {
             initialize();
       }
       EnemyGenE12S.addTimeline();
+      EnemyGenE12S.checkAlive();
+    },
+
+    checkAlive: () => {
+        const x = (player.x - 300) / 15;
+        const y = (player.y - 300) / 15;
+
+        // 外周
+        if (x*x + y*y >= 20*20) {
+            endGame();
+        }
+
+        // 沼
+        EnemyGenE12S.deadlySwamps.forEach(({x, y}) => {
+            const d = Math.sqrt((player.x - x) * (player.x - x) + (player.y - y) * (player.y - y)) / 15;
+            if (d <= 5) {
+                endGame();
+            }
+        });
     },
 
     addTimeline: () => {
@@ -150,6 +174,13 @@ const EnemyGenE12S = {
                     setTimeout(() => {
                         fieldDom.removeChild(circle);
                     }, 500);
+                    setTimeout(() => {
+                        const x = (player.x - 300) / 15;
+                        const y = (player.y - 300) / 15;
+                        if (x <= -5 || x >= 5) {
+                            endGame();
+                        }
+                    }, 10);
                 }
                 else if (i === 1) {
                     const circle = document.createElement("div");
@@ -184,6 +215,14 @@ const EnemyGenE12S = {
                     setTimeout(() => {
                         fieldDom.removeChild(circle);
                     }, 500);
+                    setTimeout(() => {
+                        const x = (player.x - 300) / 15;
+                        const y = (player.y - 300) / 15;
+                        const rad = Math.acos(x / Math.sqrt(x*x + y*y));
+                        if (rad <= Math.PI / 8 || rad >= Math.PI * 3 / 8 && rad <= Math.PI * 5 / 8 || rad >= Math.PI * 7 / 8) {
+                            endGame();
+                        }
+                    }, 10);
                 }
                 else if (i === 2) {
                     const circle = document.createElement("div");
@@ -199,6 +238,13 @@ const EnemyGenE12S = {
                     setTimeout(() => {
                         fieldDom.removeChild(circle);
                     }, 500);
+                    setTimeout(() => {
+                        const x = (player.x - 300) / 15;
+                        const y = (player.y - 300) / 15;
+                        if (x*x+y*y <= 10*10) {
+                            endGame();
+                        }
+                    }, 10);
                 }
                 else if (i === 3) {
                     const circle = document.createElement("div");
@@ -225,6 +271,14 @@ const EnemyGenE12S = {
                     setTimeout(() => {
                         fieldDom.removeChild(circle);
                     }, 500);
+                    setTimeout(() => {
+                        const x = (player.x - 300) / 15;
+                        const y = (player.y - 300) / 15;
+                        const rad = Math.acos(x / Math.sqrt(x*x + y*y));
+                        if (rad >= Math.PI / 12 && rad <= Math.PI * 11 / 12) {
+                            endGame();
+                        }
+                    }, 10);
                 }
             }
         }
@@ -341,15 +395,12 @@ const EnemyGenE12S = {
             console.log(rot);
             const centerX = 300 + 290 * Math.cos(Math.PI / 8 * rot);
             const centerY = 300 + 290 * Math.sin(Math.PI / 8 * rot);
-            EnemyGenE12S.addBreath(centerX, centerY, target.x, target.y);
+            EnemyGenE12S.addBreath(centerX, centerY, target.x, target.y, num, i === EnemyGenE12S.role ? correctPos : null);
         }
 
         // 大獅子
         const d1 = EnemyGenE12S.distance(player.x, player.y, 300, 10);
-        if (d1 < 130) {
-            EnemyGenE12S.addBreath(300, 10, player.x, player.y);
-            EnemyGenE12S.addSwamp(player.x, player.y);
-        } else {
+        {
             const pos = [
                 [
                     { x: 300 - 45, y: 10 + 10 },
@@ -364,14 +415,15 @@ const EnemyGenE12S = {
                     { x: 300 - 75, y: 10 + 70 }
                 ]
             ][EnemyGenE12S.handMode][num];
-            EnemyGenE12S.addBreath(300, 10, pos.x, pos.y);
-            EnemyGenE12S.addSwamp(pos.x, pos.y);
+            if (d1 < 130) {
+                EnemyGenE12S.addBreath(300, 10, player.x, player.y, num, pos);
+                EnemyGenE12S.addSwamp(player.x, player.y);
+            } else {
+                EnemyGenE12S.addBreath(300, 10, pos.x, pos.y, num, null);
+                EnemyGenE12S.addSwamp(pos.x, pos.y);
+            }
         }
-        const d2 = EnemyGenE12S.distance(player.x, player.y, 300, 590);
-        if (d2 < 130) {
-            EnemyGenE12S.addBreath(300, 590, player.x, player.y);
-            EnemyGenE12S.addSwamp(player.x, player.y);
-        } else {
+        {
             const pos = [
                 [
                     { x: 300 - 45, y: 600 - 10 },
@@ -386,8 +438,14 @@ const EnemyGenE12S = {
                     { x: 300 - 75, y: 600 - 70 }
                 ],
             ][EnemyGenE12S.handMode][num];
-            EnemyGenE12S.addBreath(300, 590, pos.x, pos.y);
-            EnemyGenE12S.addSwamp(pos.x, pos.y);
+            const d2 = EnemyGenE12S.distance(player.x, player.y, 300, 590);
+            if (d2 < 130) {
+                EnemyGenE12S.addBreath(300, 590, player.x, player.y, num, pos);
+                EnemyGenE12S.addSwamp(player.x, player.y);
+            } else {
+                EnemyGenE12S.addBreath(300, 590, pos.x, pos.y, num, null);
+                EnemyGenE12S.addSwamp(pos.x, pos.y);
+            }
         }
     },
 
@@ -402,9 +460,12 @@ const EnemyGenE12S = {
         circle.style.display = "inline-block";
         circle.style.position = "absolute";
         fieldDom.appendChild(circle);
+        setTimeout(() => {
+            EnemyGenE12S.deadlySwamps.push({x, y});
+        }, 2000);
     },
 
-    addBreath: (centerX, centerY, targetX, targetY) => {
+    addBreath: (centerX, centerY, targetX, targetY, num, correctPos) => {
         console.log(targetY, centerY, targetX, centerX);
         const rotdeg = Math.atan2(targetY - centerY, targetX - centerX) / Math.PI * 180;
         console.log(rotdeg);
@@ -468,7 +529,84 @@ const EnemyGenE12S = {
         fieldDom.appendChild(circle);
         setTimeout(() => {
             fieldDom.removeChild(circle);
-        }, 1000)
+        }, 1000);
+        setTimeout(() => {
+            if (correctPos) {
+                let hitCount = 0;
+                const dpsPos = [
+                    [
+                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 1), y: 300 + 150 * Math.sin(Math.PI / 8 * 1) }, 
+                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 4), y: 300 + 150 * Math.sin(Math.PI / 8 * 4) },
+                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 12), y: 300 + 150 * Math.sin(Math.PI / 8 * 12) },
+                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 15), y: 300 + 150 * Math.sin(Math.PI / 8 * 15) },
+                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 0), y: 300 + 150 * Math.sin(Math.PI / 8 * 0) },
+                    ],
+                    [
+                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 4), y: 300 + 150 * Math.sin(Math.PI / 8 * 4)  },
+                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 7), y: 300 + 150 * Math.sin(Math.PI / 8 * 7)  },
+                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 9), y: 300 + 150 * Math.sin(Math.PI / 8 * 9)  },
+                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 12), y: 300 + 150 * Math.sin(Math.PI / 8 * 12)  },
+                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 8), y: 300 + 150 * Math.sin(Math.PI / 8 * 8) },
+                    ]
+                ][EnemyGenE12S.handMode ^ (num >= 2 ? 1 : 0)];
+                console.log("B", correctPos.x, correctPos.y);
+                dpsPos.forEach(({x, y}) => {
+                    console.log("C", x, y);
+                    if (correctPos.x === x && correctPos.y === y) { return; }
+                    const hisrotdeg = Math.atan2(y - centerY, x - centerX) / Math.PI * 180;
+                    console.log("A", rotdeg, hisrotdeg);
+                    if (Math.abs(rotdeg - hisrotdeg) <= 15 || Math.abs(rotdeg - hisrotdeg) >= 360-15) {
+                        endGame();
+                    }
+                });
+                {
+                    const {x, y} = [
+                        [
+                            { x: 300 - 45, y: 10 + 10 },
+                            { x: 300 - 75, y: 10 + 70 },
+                            { x: 300 + 45, y: 10 + 10 },
+                            { x: 300 + 75, y: 10 + 70 }
+                        ],
+                        [
+                            { x: 300 + 45, y: 10 + 10 },
+                            { x: 300 + 75, y: 10 + 70 },
+                            { x: 300 - 45, y: 10 + 10 },
+                            { x: 300 - 75, y: 10 + 70 }
+                        ]
+                    ][EnemyGenE12S.handMode][num];
+                    const hisrotdeg = Math.atan2(y - centerY, x - centerX) / Math.PI * 180;
+                    if (Math.abs(rotdeg - hisrotdeg) <= 15 || Math.abs(rotdeg - hisrotdeg) >= 360-15) {
+                        hitCount += 1;
+                    }
+                }
+                {
+                    const {x, y} = [
+                        [
+                            { x: 300 - 45, y: 600 - 10 },
+                            { x: 300 - 75, y: 600 - 70 },
+                            { x: 300 + 45, y: 600 - 10 },
+                            { x: 300 + 75, y: 600 - 70 }
+                        ],
+                        [
+                            { x: 300 + 45, y: 600 - 10 },
+                            { x: 300 + 75, y: 600 - 70 },
+                            { x: 300 - 45, y: 600 - 10 },
+                            { x: 300 - 75, y: 600 - 70 }
+                        ],
+                    ][EnemyGenE12S.handMode][num];
+                    const hisrotdeg = Math.atan2(y - centerY, x - centerX) / Math.PI * 180;
+                    if (Math.abs(rotdeg - hisrotdeg) <= 15 || Math.abs(rotdeg - hisrotdeg) >= 360-15) {
+                        hitCount += 1;
+                    }
+                }
+            } else {
+                const myrotdeg = Math.atan2(player.y - centerY, player.x - centerX) / Math.PI * 180;
+                console.log(rotdeg, myrotdeg);
+                if (Math.abs(rotdeg - myrotdeg) <= 15 || Math.abs(rotdeg - myrotdeg) >= 360-15) {
+                    endGame();
+                }
+            }
+        }, 10);
     },
 
     addHand: (side) => {
@@ -504,6 +642,21 @@ const EnemyGenE12S = {
         }
         setTimeout(() => {
             fieldDom.removeChild(circle);
+            if (side === 0) {
+                const x = (player.x - 300) / 15;
+                const y = (player.y - 300) / 15;
+                const rad = Math.acos(x / Math.sqrt(x*x + y*y));
+                if (rad >= Math.PI * 5 / 12) {
+                    endGame();
+                }
+            } else {
+                const x = (player.x - 300) / 15;
+                const y = (player.y - 300) / 15;
+                const rad = Math.acos(x / Math.sqrt(x*x + y*y));
+                if (rad <= Math.PI * 7 / 12) {
+                    endGame();
+                }
+            }
         }, 4000);
         fieldDom.appendChild(circle);
 

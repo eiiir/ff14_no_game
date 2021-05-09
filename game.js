@@ -32,6 +32,10 @@ const initialize = () => {
 	sprintRecast = 0;
 	sprintBuff = 0;
 	initialized = true;
+	player.x = fieldSize/2;
+	player.y = fieldSize/2;
+	player.hp = 1;
+	startTime = Date.now();
 };
 
 let gameActive = false;
@@ -113,7 +117,6 @@ const endGame = () => {
 	initialized = false;
 	keyState.w = keyState.a = keyState.s = keyState.d = false;
 	alert(`You died. ${timerDom.innerText}`);
-	startTime = -1;
 
 	const stage = document.getElementById('stage').value;
 	if (stage === 'normal') {
@@ -158,9 +161,6 @@ const movePlayer = () => {
 }
 
 const tick = () => {
-	if (startTime < 0) {
-		startTime = Date.now();
-	}
 	sprintBuff = Math.max(0, sprintBuff - 1/60);
 	sprintRecast = Math.max(0, sprintRecast - 1/60);
 	const stage = document.getElementById('stage').value;
