@@ -30,8 +30,8 @@ const EnemyGenE12S = {
             fieldDom.removeChild(fieldDom.children[1]);
         }
         EnemyGenE12S.phase = 0;
-        EnemyGenE12S.role = 1;//Math.floor(Math.random() * 8);
-        EnemyGenE12S.handMode = 0;//Math.floor(Math.random() * 2);
+        EnemyGenE12S.role = Math.floor(Math.random() * 8);
+        EnemyGenE12S.handMode = Math.floor(Math.random() * 2);
         fieldDom.style.borderRadius = "50%";
         EnemyGenE12S.addCircle();
         for(let i = 0; i < 16; i++) {
