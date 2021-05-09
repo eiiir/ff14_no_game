@@ -1,5 +1,5 @@
 const playerRadius = 10;
-const speed = 4;
+let speed = 4;
 const fieldSize = 600;
 const player = {
 	x: fieldSize/2, y:fieldSize/2, hp:1
@@ -129,7 +129,7 @@ const renderSaku = () => {
 
 const movePlayer = () => {
 	if (keyState.space && sprintRecast === 0) {
-		sprintBuff = 15;
+		sprintBuff = 10;
 		sprintRecast = 60;
 	}
 	let actualSpeed = sprintBuff > 0 ? speed * 1.3 : speed;
@@ -167,6 +167,9 @@ const tick = () => {
 	switch (stage) {
 		case 'e7s':
 			EnemyGenE7S.maybeAddEnemy(fieldDom);
+			break;
+		case 'e12s':
+			EnemyGenE12S.maybeAddEnemy(fieldDom);
 			break;
 		default:
 			EnemyGen.maybeAddEnemy(fieldDom);
