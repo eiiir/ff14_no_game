@@ -10,6 +10,7 @@ const keyState = {
 	a: false,
 	s: false,
 	d: false,
+	q: false,
 	space: false,
 };
 let initialized = false;
@@ -31,6 +32,8 @@ const afterEverythingLoaded = () => {
 const initialize = () => {
 	sprintRecast = 0;
 	sprintBuff = 0;
+	surecastRecast = 0;
+	surecastBuff = 0;
 	initialized = true;
 	player.x = fieldSize/2;
 	player.y = fieldSize/2;
@@ -66,6 +69,11 @@ window.addEventListener("keydown", (e) => {
 			e.preventDefault();
 			break;
 		}
+		case 81: /*q*/{
+			keyState.q = true;
+			e.preventDefault();
+			break;
+		}
 	}
 });
 
@@ -92,6 +100,11 @@ window.addEventListener("keyup", (e) => {
 			e.preventDefault();
 			break;
 		}
+		case 81: /*q*/{
+			keyState.q = false;
+			e.preventDefault();
+			break;
+		}
 	}
 });
 
@@ -100,6 +113,9 @@ const playerDom = document.getElementById("player");
 const sprintBuffDom = document.getElementById("sprint-buff");
 const sprintBuffTimeDom = document.getElementById("sprint-buff-time");
 const abilitySprintTimeDom = document.getElementById("ability-sprint-time");
+const surecastBuffDom = document.getElementById("surecast-buff");
+const surecastBuffTimeDom = document.getElementById("surecast-buff-time");
+const abilitySurecastTimeDom = document.getElementById("ability-surecast-time");
 const timerDom = document.getElementById("timer");
 const render = () => {
 	timerDom.innerText = `Score: ${Date.now() - startTime}`;
@@ -108,10 +124,15 @@ const render = () => {
 	sprintBuffTimeDom.innerText = Math.floor(sprintBuff + 0.5);
 	sprintBuffDom.style.display = sprintBuff > 0 ? 'block' : 'none';
 	abilitySprintTimeDom.innerText = sprintRecast > 0 ? Math.floor(sprintRecast + 0.5) : '';
+	surecastBuffTimeDom.innerText = Math.floor(surecastBuff + 0.5);
+	surecastBuffDom.style.display = surecastBuff > 0 ? 'block' : 'none';
+	abilitySurecastTimeDom.innerText = surecastRecast > 0 ? Math.floor(surecastRecast + 0.5) : '';
 };
 
 let sprintRecast = 0;
 let sprintBuff = 0;
+let surecastRecast = 0;
+let surecastBuff = 0;
 const endGame = () => {
 	gameActive = false;
 	initialized = false;
@@ -134,6 +155,10 @@ const movePlayer = () => {
 	if (keyState.space && sprintRecast === 0) {
 		sprintBuff = 10;
 		sprintRecast = 60;
+	}
+	if (keyState.q && surecastRecast === 0) {
+		surecastBuff = 6;
+		surecastRecast = 120;
 	}
 	let actualSpeed = sprintBuff > 0 ? speed * 1.3 : speed;
 	if ((keyState.w - keyState.s) && (keyState.a - keyState.d)) {
@@ -163,6 +188,8 @@ const movePlayer = () => {
 const tick = () => {
 	sprintBuff = Math.max(0, sprintBuff - 1/60);
 	sprintRecast = Math.max(0, sprintRecast - 1/60);
+	surecastBuff = Math.max(0, surecastBuff - 1/60);
+	surecastRecast = Math.max(0, surecastRecast - 1/60);
 	const stage = document.getElementById('stage').value;
 	switch (stage) {
 		case 'e7s':

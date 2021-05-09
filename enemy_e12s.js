@@ -323,7 +323,8 @@ const EnemyGenE12S = {
         circle.style.background = `radial-gradient(circle at center, rgba(255,105,0, 0.5) 0, rgba(255,255,0, 0.5), rgba(255,105,0, 0.5), rgba(255,255,0, 0.5) 100%)`;
         fieldDom.appendChild(circle);
         setTimeout(() => {
-            fieldDom.removeChild(circle)
+            fieldDom.removeChild(circle);
+            if (surecastBuff > 0) return;
             // 吹き飛ばし 15m = 225px
             // 中央 (300, 300)
             const theta = Math.atan2(player.y - 300, player.x - 300);
