@@ -26,12 +26,12 @@ const EnemyGenE12S = {
     },
 
     initialize: () => {
-        while (fieldDom.children.length > 1) {
+        while (fieldDom.children.length > 2) {
             fieldDom.removeChild(fieldDom.children[1]);
         }
         EnemyGenE12S.phase = 0;
-        EnemyGenE12S.role = Math.floor(Math.random() * 8);
-        EnemyGenE12S.handMode = Math.floor(Math.random() * 2);
+        EnemyGenE12S.role = 1;//Math.floor(Math.random() * 8);
+        EnemyGenE12S.handMode = 0;//Math.floor(Math.random() * 2);
         fieldDom.style.borderRadius = "50%";
         EnemyGenE12S.addCircle();
         for(let i = 0; i < 16; i++) {
@@ -376,15 +376,15 @@ const EnemyGenE12S = {
         for (let i = 0; i < 4; i++) {
             const correctPos = [
                 [
-                    { x: 300 + 150 * Math.cos(Math.PI / 8 * 1), y: 300 + 150 * Math.sin(Math.PI / 8 * 1) }, 
+                    { x: 300 + 120 * Math.cos(Math.PI / 8 * 1), y: 300 + 120 * Math.sin(Math.PI / 8 * 1) }, 
                     { x: 300 + 150 * Math.cos(Math.PI / 8 * 4), y: 300 + 150 * Math.sin(Math.PI / 8 * 4) },
                     { x: 300 + 150 * Math.cos(Math.PI / 8 * 12), y: 300 + 150 * Math.sin(Math.PI / 8 * 12) },
-                    { x: 300 + 150 * Math.cos(Math.PI / 8 * 15), y: 300 + 150 * Math.sin(Math.PI / 8 * 15) }
+                    { x: 300 + 120 * Math.cos(Math.PI / 8 * 15), y: 300 + 120 * Math.sin(Math.PI / 8 * 15) }
                 ],
                 [
                     { x: 300 + 150 * Math.cos(Math.PI / 8 * 4), y: 300 + 150 * Math.sin(Math.PI / 8 * 4)  },
-                    { x: 300 + 150 * Math.cos(Math.PI / 8 * 7), y: 300 + 150 * Math.sin(Math.PI / 8 * 7)  },
-                    { x: 300 + 150 * Math.cos(Math.PI / 8 * 9), y: 300 + 150 * Math.sin(Math.PI / 8 * 9)  },
+                    { x: 300 + 120 * Math.cos(Math.PI / 8 * 7), y: 300 + 120 * Math.sin(Math.PI / 8 * 7)  },
+                    { x: 300 + 120 * Math.cos(Math.PI / 8 * 9), y: 300 + 120 * Math.sin(Math.PI / 8 * 9)  },
                     { x: 300 + 150 * Math.cos(Math.PI / 8 * 12), y: 300 + 150 * Math.sin(Math.PI / 8 * 12)  }
                 ]
             ][EnemyGenE12S.handMode ^ (num >= 2 ? 1 : 0)][i];
@@ -533,19 +533,18 @@ const EnemyGenE12S = {
         }, 1000);
         setTimeout(() => {
             if (correctPos) {
-                let hitCount = 0;
                 const dpsPos = [
                     [
-                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 1), y: 300 + 150 * Math.sin(Math.PI / 8 * 1) }, 
+                        { x: 300 + 120 * Math.cos(Math.PI / 8 * 1), y: 300 + 120 * Math.sin(Math.PI / 8 * 1) }, 
                         { x: 300 + 150 * Math.cos(Math.PI / 8 * 4), y: 300 + 150 * Math.sin(Math.PI / 8 * 4) },
                         { x: 300 + 150 * Math.cos(Math.PI / 8 * 12), y: 300 + 150 * Math.sin(Math.PI / 8 * 12) },
-                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 15), y: 300 + 150 * Math.sin(Math.PI / 8 * 15) },
+                        { x: 300 + 120 * Math.cos(Math.PI / 8 * 15), y: 300 + 120 * Math.sin(Math.PI / 8 * 15) },
                         { x: 300 + 150 * Math.cos(Math.PI / 8 * 0), y: 300 + 150 * Math.sin(Math.PI / 8 * 0) },
                     ],
                     [
                         { x: 300 + 150 * Math.cos(Math.PI / 8 * 4), y: 300 + 150 * Math.sin(Math.PI / 8 * 4)  },
-                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 7), y: 300 + 150 * Math.sin(Math.PI / 8 * 7)  },
-                        { x: 300 + 150 * Math.cos(Math.PI / 8 * 9), y: 300 + 150 * Math.sin(Math.PI / 8 * 9)  },
+                        { x: 300 + 120 * Math.cos(Math.PI / 8 * 7), y: 300 + 120 * Math.sin(Math.PI / 8 * 7)  },
+                        { x: 300 + 120 * Math.cos(Math.PI / 8 * 9), y: 300 + 120 * Math.sin(Math.PI / 8 * 9)  },
                         { x: 300 + 150 * Math.cos(Math.PI / 8 * 12), y: 300 + 150 * Math.sin(Math.PI / 8 * 12)  },
                         { x: 300 + 150 * Math.cos(Math.PI / 8 * 8), y: 300 + 150 * Math.sin(Math.PI / 8 * 8) },
                     ]
