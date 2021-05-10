@@ -151,7 +151,7 @@ const renderSaku = () => {
 	fieldDom.style.border = isGoku() ? "3px solid orangered" : "3px solid royalblue";
 };
 
-const movePlayer = () => {
+const movePlayer = (elapsedMilliSeconds) => {
 	if (keyState.space && sprintRecast === 0) {
 		sprintBuff = 10;
 		sprintRecast = 60;
@@ -160,7 +160,7 @@ const movePlayer = () => {
 		surecastBuff = 6;
 		surecastRecast = 120;
 	}
-	let actualSpeed = sprintBuff > 0 ? speed * 1.3 : speed;
+	let actualSpeed = (sprintBuff > 0 ? speed * 1.3 : speed) * elapsedMilliSeconds / 1000 * 60;
 	if ((keyState.w - keyState.s) && (keyState.a - keyState.d)) {
 		actualSpeed /= Math.sqrt(2);
 	}
@@ -185,11 +185,11 @@ const movePlayer = () => {
 	player.y = Math.min(fieldSize, player.y);
 }
 
-const tick = () => {
-	sprintBuff = Math.max(0, sprintBuff - 1/60);
-	sprintRecast = Math.max(0, sprintRecast - 1/60);
-	surecastBuff = Math.max(0, surecastBuff - 1/60);
-	surecastRecast = Math.max(0, surecastRecast - 1/60);
+const tick = (elapsedMilliSeconds) => {
+	sprintBuff = Math.max(0, sprintBuff - elapsedMilliSeconds / 1000);
+	sprintRecast = Math.max(0, sprintRecast - elapsedMilliSeconds / 1000);
+	surecastBuff = Math.max(0, surecastBuff - elapsedMilliSeconds / 1000);
+	surecastRecast = Math.max(0, surecastRecast - elapsedMilliSeconds / 1000);
 	const stage = document.getElementById('stage').value;
 	switch (stage) {
 		case 'e7s':
@@ -204,10 +204,14 @@ const tick = () => {
 	}
 }
 
+let previousClock = window.performance.now();
 setInterval(() => {
+	const currentClock = window.performance.now();
+	const elapsedMilliSeconds = currentClock - previousClock;
+	previousClock = currentClock;
 	if (gameActive) {
-		tick();
-		movePlayer();
+		tick(elapsedMilliSeconds);
+		movePlayer(elapsedMilliSeconds);
 		render();
 	}
 }, 17);
