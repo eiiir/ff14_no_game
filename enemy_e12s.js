@@ -107,7 +107,7 @@ const EnemyGenE12S = {
         }
         else if (EnemyGenE12S.phase === 5 && time >= 29000) {
             EnemyGenE12S.addBreaths(2);
-            EnemyGenE12S.addHand(1 - EnemyGenE12S.handMode);
+            EnemyGenE12S.addHand(Math.floor(Math.random() * 2));
             EnemyGenE12S.phase = 6;
         }
         else if (EnemyGenE12S.phase === 6 && time >= 37000) {
