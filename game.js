@@ -198,6 +198,9 @@ const tick = (elapsedMilliSeconds) => {
 		case 'e12s':
 			EnemyGenE12S.maybeAddEnemy(fieldDom);
 			break;
+		case 'dwu':
+			EnemyGenDWU.maybeAddEnemy(fieldDom);
+			break;
 		default:
 			EnemyGen.maybeAddEnemy(fieldDom);
 			break;
