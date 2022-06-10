@@ -26,6 +26,15 @@ const Util = {
     return circle;
   },
 
+  circleAoE: (x, y, r, reason) => {
+    return {
+      collision: (px, py) => {
+        return Util.distance(x, y, px, py) < r;
+      },
+      reason
+    };
+  },
+
   strokeCircle: (x, y, r) => {
     const circle = document.createElement("div");
     circle.style.width = `${r*2}px`;
@@ -56,6 +65,16 @@ const Util = {
     return circle;
   },
 
+  donutAoE: (x, y, rIn, rOut, reason) => {
+    return {
+      collision: (px, py) => {
+        const d = Util.distance(x, y, px, py);
+        return  rIn < d && d < rOut;
+      },
+      reason
+    };
+  },
+
   addBoldLine: (x1, y1, x2, y2, width, length) => {
     if (!length) {
         length = Util.distance(x1, y1, x2, y2);
@@ -75,6 +94,15 @@ const Util = {
     rect.style.transform = `rotate(${rotdeg}deg)`;
     fieldDom.appendChild(rect);
     return rect;
+  },
+
+  rectAoe: (x1, y1, x2, y2, reason) => {
+    return {
+      collision: (px, py) => {
+        return x1 < px && px < x2 && y1 < py && py < y2;
+      },
+      reason
+    };
   },
 
   removeLater: (dom, timeoutMs) => {
