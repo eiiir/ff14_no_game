@@ -23,13 +23,36 @@ const EnemyGenDWU = {
     castDiv: undefined,
 
     initDebuff: () => {
-        const r = Math.floor(Math.random() * 2);
-        const patterns = [
-            [[1, '↑'],[1, '↓'],[1, 'o'],[2, '↑'],[2, '↓'],[3, 'o'],[3, 'o'],[3, 'o']],
-            [[1, 'o'],[1, 'o'],[1, 'o'],[2, 'o'],[2, 'o'],[3, '↑'],[3, '↓'],[3, 'o']]
-        ];
-        const pat = patterns[r];
-        EnemyGenDWU.debuff = Util.shuffle(pat);
+        const dwuRole = document.getElementById("dwu_role").selectedIndex;
+        if (dwuRole != 0) {
+            const fixedPatterns = [
+                [[1, '↑'],[1, '↓'],[1, 'o'],[2, '↑'],[2, '↓'],[3, 'o'],[3, 'o'],[3, 'o']],
+                [[1, 'o'],[1, '↑'],[1, '↓'],[2, '↑'],[2, '↓'],[3, 'o'],[3, 'o'],[3, 'o']],
+                [[1, '↓'],[1, '↑'],[1, 'o'],[2, '↑'],[2, '↓'],[3, 'o'],[3, 'o'],[3, 'o']],
+                [[2, '↑'],[1, '↑'],[1, '↓'],[1, 'o'],[2, '↓'],[3, 'o'],[3, 'o'],[3, 'o']],
+                [[2, '↓'],[1, '↑'],[1, '↓'],[1, 'o'],[2, '↑'],[3, 'o'],[3, 'o'],[3, 'o']],
+                [[3, '↑'],[1, 'o'],[1, 'o'],[1, 'o'],[2, 'o'],[2, 'o'],[3, '↓'],[3, 'o']],
+                [[3, 'o'],[1, 'o'],[1, 'o'],[1, 'o'],[2, 'o'],[2, 'o'],[3, '↑'],[3, '↓']],
+                [[3, '↓'],[1, 'o'],[1, 'o'],[1, 'o'],[2, 'o'],[2, 'o'],[3, '↑'],[3, 'o']]
+            ];
+            const p = fixedPatterns[dwuRole-1];
+            const me = p[0];
+            const others = p.slice(1);
+            console.log(me);
+            console.log(others);
+            Util.shuffle(others);
+            EnemyGenDWU.debuff = [me, ...others];
+        }
+        else {
+            const r = Math.floor(Math.random() * 2);
+            const patterns = [
+                [[1, '↑'],[1, '↓'],[1, 'o'],[2, '↑'],[2, '↓'],[3, 'o'],[3, 'o'],[3, 'o']],
+                [[1, 'o'],[1, 'o'],[1, 'o'],[2, 'o'],[2, 'o'],[3, '↑'],[3, '↓'],[3, 'o']]
+            ];
+            const pat = patterns[r];
+            EnemyGenDWU.debuff = Util.shuffle(pat);
+        }
+        
     },
 
     initBiga: () => {
@@ -41,7 +64,7 @@ const EnemyGenDWU = {
         "Paladin",
         "WhiteMage",
         "Sage",
-        "Lancer",
+        "Reaper",
         "RedMage",
         "Summoner",
         "Dancer"
@@ -49,15 +72,26 @@ const EnemyGenDWU = {
 
     addPartyList: () => {
         const partyList = document.createElement("div");
-        for (let i = 0; i < 8; i++) {
-            const job = EnemyGenDWU.partyMembers[i];
+
+        const addJob = (job) => {
             const partyMemberDiv = document.createElement("div");
             const jobIcon = document.createElement("img");
             jobIcon.src = `img/jobIcons/${job}.png`;
             jobIcon.style.width = "50px";
             partyMemberDiv.appendChild(jobIcon);
             partyList.appendChild(partyMemberDiv);
+        };
+
+        const myJob = document.getElementById("dwu_job").value;
+        addJob(myJob);
+
+        for (let i = 0; i < 8; i++) {
+            const job = EnemyGenDWU.partyMembers[i];
+            if (job != myJob) {
+                addJob(job);
+            }
         }
+
         partyList.style.width = `200px`;
         partyList.style.left = 620;
         partyList.style.top = 100;
@@ -98,7 +132,6 @@ const EnemyGenDWU = {
             const progress = (Date.now() - CastStartTime) / duration;
             if (progress >= 0 && progress < 1) {
                 const p100 = Math.floor(progress * 1000) / 10;
-                console.log(p100);
                 castBar.style.backgroundImage =
                   `linear-gradient(` +
                   `to right,` +
@@ -106,7 +139,6 @@ const EnemyGenDWU = {
                   `rgba(255, 0, 0, 1) ${p100}%,` +
                   `rgba(0, 0, 0, 0) ${p100}%,` +
                   `rgba(0, 0, 0, 0) 100%)`;
-                console.log(castBar.style.backgroundImage);
             }
             if (progress >= 1) {
                 clearInterval(interval);
@@ -184,9 +216,6 @@ const EnemyGenDWU = {
         EnemyGenDWU.initBiga();
         speed = 1.2;
 
-        //Util.addDonut(Util.tile(20), Util.tile(20), Util.tile(5), Util.tile(10));
-        //Util.addCircle(Util.tile(20), Util.tile(20), Util.tile(5));
-        //Util.addBoldLine(Util.tile(20), Util.tile(20), Util.tile(30), Util.tile(20), Util.tile(3), Util.tile(40));
         EnemyGenDWU.addTargetCircle();
         EnemyGenDWU.addPartyList();
         EnemyGenDWU.addCastBar();
@@ -354,6 +383,8 @@ const EnemyGenDWU = {
             EnemyGenDWU.addGeirskogul(Util.tile(-5), 0, Util.tile(7) / Math.sqrt(2), Util.tile(7) / Math.sqrt(2));
             EnemyGenDWU.addGeirskogul(0, Util.tile(7),  Util.tile(7), 0);
             EnemyGenDWU.phase = 16;
+            gameActive = false;
+            initialized = false;
         }
     }
 };

@@ -27,6 +27,27 @@ const afterEverythingLoaded = () => {
 	if (cookies["job"]) {
 		Player.changeJob(cookies["job"]);
 	}
+	const dwuJob = window.localStorage.getItem("dwu_job");
+	if (dwuJob) {
+		document.getElementById("dwu_job").selectedIndex = parseInt(dwuJob);
+	}
+	const dwuRole = window.localStorage.getItem("dwu_role");
+	if (dwuRole) {
+		document.getElementById("dwu_role").selectedIndex = parseInt(dwuRole);
+	}
+}
+
+const onStageChange = (obj) => {
+	const dwuJobSelect = document.getElementById("dwu_job");
+	const dwuRoleSelect = document.getElementById("dwu_role");
+	if (obj.value == "dwu") {
+		dwuJobSelect.style.visibility = "visible";
+		dwuRoleSelect.style.visibility = "visible";
+	}
+	else {
+		dwuJobSelect.style.visibility = "hidden";
+		dwuRoleSelect.style.visibility = "hidden";
+	}
 }
 
 const initialize = () => {
@@ -139,10 +160,10 @@ const endGame = () => {
 	keyState.w = keyState.a = keyState.s = keyState.d = false;
 	alert(`You died. ${timerDom.innerText}`);
 
-	const stage = document.getElementById('stage').value;
-	if (stage === 'normal') {
-		LeaderBoard.sendScore(parseInt(timerDom.innerText.substr(7)));
-	}
+	// const stage = document.getElementById('stage').value;
+	// if (stage === 'normal') {
+	// 	LeaderBoard.sendScore(parseInt(timerDom.innerText.substr(7)));
+	// }
 };
 
 const isGoku = () => document.getElementById("remove_saku").checked;
