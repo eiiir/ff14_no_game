@@ -60,8 +60,7 @@ const Util = {
     if (!length) {
         length = Util.distance(x1, y1, x2, y2);
     }
-    console.log(width);
-    console.log(length);
+
     const rect = document.createElement("div");
     rect.style.width = `${length}px`;
     rect.style.height = `${width}px`;
@@ -70,7 +69,6 @@ const Util = {
     rect.style.top = `${y1 - width/2}px`;
     rect.style.display = "inline-block";
     rect.style.position = "absolute";
-    console.log(rect);
 
     const rotdeg = Math.atan2(y2 - y1, x2 - x1) / Math.PI * 180;
     rect.style.transformOrigin = "left center";

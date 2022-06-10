@@ -57,12 +57,35 @@
 			</div>
 		</div>
 		<div><input type="checkbox" id="remove_saku" onclick="renderSaku()">極</div>
-		<div><select id="stage">
-			<option value="normal">ノーマル</option>
-			<option value="e7s">共鳴3層</option>
-			<option value="e12s">再生4層</option>
-			<option value="dwu" selected>堕天のドラゴンダイブ</option>
-		</select></div>
+		<div>
+			<select id="stage" onchange="onStageChange(this)">
+				<option value="normal">ノーマル</option>
+				<option value="e7s">共鳴3層</option>
+				<option value="e12s">再生4層</option>
+				<option value="dwu" selected>堕天のドラゴンダイブ</option>
+			</select>
+			<select id="dwu_job" onchange="window.localStorage.setItem('dwu_job', this.selectedIndex)">
+				<option value="Warrior">戦士</option>
+				<option value="Paladin">ナイト</option>
+				<option value="WhiteMage">白魔道士</option>
+				<option value="Sage">賢者</option>
+				<option value="Reaper">リーパー</option>
+				<option value="RedMage">赤魔道士</option>
+				<option value="Summoner">召喚士</option>
+				<option value="Dancer">踊り子</option>
+			</select>
+			<select id="dwu_role" onchange="window.localStorage.setItem('dwu_role', this.selectedIndex)">
+				<option value="random">ランダム</option>
+				<option value="1_east">Ⅰ 東</option>
+				<option value="1_south">Ⅰ 南</option>
+				<option value="1_west">Ⅰ 西</option>
+				<option value="2_east">Ⅱ 東</option>
+				<option value="2_west">Ⅱ 西</option>
+				<option value="3_east">Ⅲ 東</option>
+				<option value="3_south">Ⅲ 南</option>
+				<option value="3_west">Ⅲ 西</option>
+			</select>
+		</div>
 		<select name="icon" id="playerIconSelect">
 			<option value="whm" selected>白魔道士</option>
 			<option value="ast">占星術師</option>
@@ -77,6 +100,8 @@
 			<option value="smn">召喚士</option>
 			<option value="war">戦士</option>
 			<option value="mnk">モンク</option>
+			<option value="rdm">赤魔道士</option>
+			<option value="sam">侍</option>
 		</select>
 		<br/>
 		<div style="font-weight: bold">LeaderBoard</div>
