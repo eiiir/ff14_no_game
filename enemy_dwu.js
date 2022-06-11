@@ -258,7 +258,7 @@ const EnemyGenDWU = {
     addJabi: () => {
         const effect = Util.addDonut(300, 300, Util.tile(7), Util.tile(20));
         activeAoEs.push(Util.donutAoE(300, 300, Util.tile(7), Util.tile(20), '大車輪・邪尾を踏みました'))
-        Util.removeLater(effect, 100);
+        Util.removeLater(effect, 1000);
     },
 
     addGeirskogul: (x1, y1, x2, y2) => {
