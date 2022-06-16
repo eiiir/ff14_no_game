@@ -275,7 +275,7 @@ const EnemyGenDWU = {
         console.log("addDarkJump", x, y, expectedJob);
         const effect = Util.addCircle(300 + x, 300 + y, Util.tile(4));
         if (EnemyGenDWU.getMyJob() === expectedJob) {
-            activeAoEs.push(Util.donutAoE(300 + x, 300 + y, Util.tile(1), Util.tile(999), 'ダークハイジャンプをまき散らしました'))
+            activeAoEs.push(Util.donutAoE(300 + x, 300 + y, Util.tile(2), Util.tile(999), 'ダークハイジャンプをまき散らしました'))
         } else {
             activeAoEs.push(Util.circleAoE(300 + x, 300 + y, Util.tile(4), 'ダークハイジャンプに巻き込まれました'))
         }
