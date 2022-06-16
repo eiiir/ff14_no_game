@@ -20,7 +20,14 @@ const EnemyGenDWU = {
     debuff: undefined,
     partyListDiv: undefined,
     castDiv: undefined,
+    cast2Div: undefined,
     activeAoEs: [],
+
+    debuffIncludes: (dbf) => {
+        return EnemyGenDWU.debuff.some((d) => {
+            return d[0] === dbf[0] && d[1] === dbf[1];
+        });
+    },
 
     initDebuff: () => {
         const dwuRole = document.getElementById("dwu_role").selectedIndex;
@@ -138,7 +145,7 @@ const EnemyGenDWU = {
 
         partyList.style.width = `200px`;
         partyList.style.left = 620;
-        partyList.style.top = 100;
+        partyList.style.top = 140;
         partyList.style.display = "inline-block";
         partyList.style.position = "absolute";
         EnemyGenDWU.partyListDiv = partyList;
@@ -167,9 +174,56 @@ const EnemyGenDWU = {
         fieldDom.appendChild(castDiv);
     },
 
+    addCastBar2: () => {
+        const castDiv = document.createElement("div");
+        const castName = document.createElement("div");
+        castName.style.width = "270px";
+        castName.style.height = "20px";
+        const castBar = document.createElement("div");
+        castBar.style.width = "270px";
+        castBar.style.height = "12px";
+        castBar.style.border = "1px solid rgba(0, 0, 0, 1)";
+        castBar.style.backgroundColor = "rgba(0, 0, 0, 0)";
+        castDiv.appendChild(castName);
+        castDiv.appendChild(castBar);
+
+        castDiv.style.width = `200px`;
+        castDiv.style.left = 620;
+        castDiv.style.top = 100;
+        castDiv.style.display = "inline-block";
+        castDiv.style.position = "absolute";
+        EnemyGenDWU.cast2Div = castDiv;
+        fieldDom.appendChild(castDiv);
+    },
+
     startCast: (name, duration) => {
         const castName = EnemyGenDWU.castDiv.children[0];
         const castBar = EnemyGenDWU.castDiv.children[1];
+        castName.textContent = name;
+        const CastStartTime = Date.now();
+        const interval = setInterval(() => {
+            const progress = (Date.now() - CastStartTime) / duration;
+            if (progress >= 0 && progress < 1) {
+                const p100 = Math.floor(progress * 1000) / 10;
+                castBar.style.backgroundImage =
+                  `linear-gradient(` +
+                  `to right,` +
+                  `rgba(255, 0, 0, 1),` +
+                  `rgba(255, 0, 0, 1) ${p100}%,` +
+                  `rgba(0, 0, 0, 0) ${p100}%,` +
+                  `rgba(0, 0, 0, 0) 100%)`;
+            }
+            if (progress >= 1) {
+                clearInterval(interval);
+                castName.textContent = "";
+                castBar.style.backgroundImage = null;
+            }
+        }, 1000/30); // 30 FPS
+    },
+
+    startCast2: (name, duration) => {
+        const castName = EnemyGenDWU.cast2Div.children[0];
+        const castBar = EnemyGenDWU.cast2Div.children[1];
         castName.textContent = name;
         const CastStartTime = Date.now();
         const interval = setInterval(() => {
@@ -221,11 +275,53 @@ const EnemyGenDWU = {
         console.log("addDarkJump", x, y, expectedJob);
         const effect = Util.addCircle(300 + x, 300 + y, Util.tile(4));
         if (EnemyGenDWU.getMyJob() === expectedJob) {
-            activeAoEs.push(Util.donutAoE(300 + x, 300 + y, Util.tile(4), Util.tile(999), 'ダークハイジャンプをまき散らしました'))
+            activeAoEs.push(Util.donutAoE(300 + x, 300 + y, Util.tile(1), Util.tile(999), 'ダークハイジャンプをまき散らしました'))
         } else {
             activeAoEs.push(Util.circleAoE(300 + x, 300 + y, Util.tile(4), 'ダークハイジャンプに巻き込まれました'))
         }
         Util.removeLater(effect, 1000);
+    },
+
+    addZako: (phase, place) => {
+        const props = {
+            1: {
+                '↑': { x: Util.tile(7), y: 0, fromRot: Math.random() * 360, toRot: 90 },
+                '↓': { x: Util.tile(-7), y: 0, fromRot: Math.random() * 360, toRot: 270 },
+                'o': { x: 0, y: Util.tile(7), fromRot: Math.random() * 360, toRot: 180 }
+            },
+            2: {
+                '↑': { x: Util.tile(6), y: Util.tile(-7), fromRot: Math.random() * 360, toRot: 270 },
+                '↓': { x: Util.tile(-6), y: Util.tile(-7), fromRot: Math.random() * 360, toRot: 90 },
+            },
+            3: {
+                '↑': { x: Util.tile(7), y: 0, fromRot: Math.random() * 360, toRot: 90 },
+                '↓': { x: Util.tile(-7), y: 0, fromRot: Math.random() * 360, toRot: 270 },
+                'o': { x: 0, y: Util.tile(7), fromRot: Math.random() * 360, toRot: 180 }
+            },
+        };
+
+        const prop = props[phase][place];
+
+        const img = Util.addImage('img/enemy.png', 300 + prop.x, 300 + prop.y, Util.tile(3), Util.tile(3));
+        img.style.transformOrigin = "center center";
+        img.style.transform = `rotate(${prop.fromRot}deg)`;
+
+        setTimeout(() => {
+            const castStartTime = Date.now();
+            const interval = setInterval(() => {
+                const duration = 500;
+                const progress = (Date.now() - castStartTime) / duration;
+                if (progress >= 0 && progress < 1) {
+                    const rot = (prop.fromRot + (prop.toRot - prop.fromRot) * progress);
+                    img.style.transform = `rotate(${rot}deg)`;
+                }
+                if (progress >= 1) {
+                    clearInterval(interval);
+                }
+            }, 1000/60); // 60 FPS
+        }, 2600);
+        
+        Util.removeLater(img, 8000);
     },
 
     addDarkDragonDivePrep: (x, y) => {
@@ -266,13 +362,72 @@ const EnemyGenDWU = {
         Util.removeLater(effect, 1000);
     },
 
-    addGeirskogulAoE: (isUpper, isPrep) => {
-        const reason = isPrep ? 'ゲイルスコグルを変な方向にまき散らしました' : 'ゲイルスコグルにあたったかも'
-        const x1 = 0;
-        const x2 = 999999;
-        const y1 = isUpper ? 0 : 300;
-        const y2 = isUpper ? 300 : 999999;
-        activeAoEs.push(Util.rectAoe(x1, y1, x2, y2, reason));
+    addGeirskogulPrepAoE: (phase, place) => {
+        if (EnemyGenDWU.getMyJob() === EnemyGenDWU.getExpectedJob(phase, place)) {
+            activeAoEs.push({
+                collision: (px, py) => {
+                    console.log("addGeirskogulPrepAoE", px, py, Util.tile(7))
+                    if (place === '↑') {
+                        return px < 300 + Util.tile(7);
+                    }
+                    else if (place === '↓') {
+                        return px > 300 - Util.tile(7);
+                    }
+                    else { // place === 'o'
+                        return py < 300 + Util.tile(7);
+                    }
+                },
+                reason: 'ゲイルスコグルは外に向けてください'
+            });
+        }
+        else {
+            const reason = '他人のゲイルスコグルを誘導しないでください';
+            const aoe = {
+                '↑': Util.circleAoE(300 + Util.tile(7), 300, Util.tile(3), reason),
+                '↓': Util.circleAoE(300 + Util.tile(-7), 300, Util.tile(3), reason),
+                'o': Util.circleAoE(300, 300 + Util.tile(7), Util.tile(3), reason)
+            }
+            activeAoEs.push(aoe[place]);
+        }
+    },
+
+    addGeirskogul2PrepAoE: (expectedJob) => {
+        if (EnemyGenDWU.getMyJob() === expectedJob) {
+            activeAoEs.push({
+                collision: (px, py) => {
+                    return py > 300 + Util.tile(-6);
+                },
+                reason: '２回目ゲイルスコグルは北に向けてください'
+            });
+        }
+    },
+
+    addGeirskogulAoE: (place) => {
+        const reason = 'ゲイルスコグルを踏みました';
+        const aoe = {
+            '↑': Util.rectAoe(300 + Util.tile(7), 300 + Util.tile(3), 300 + Util.tile(40), 300 + Util.tile(-3), reason),
+            '↓': Util.rectAoe(300 + Util.tile(-40), 300 + Util.tile(3), 300 + Util.tile(-7), 300 + Util.tile(-3), reason),
+            'o': Util.rectAoe(300 + Util.tile(-3), 300 + Util.tile(7), 300 + Util.tile(3), 300 + Util.tile(40), reason)
+        }
+
+        activeAoEs.push(aoe[place]);
+    },
+
+    addGeirskogul2AoE: () => {
+        activeAoEs.push({
+            collision: (px, py) => {
+                return py < 300 + Util.tile(-7) + Util.tile(3);
+            },
+            reason: 'ゲイルスコグルを踏みました'
+        });
+    },
+
+    addEyeOfTyrantAoE: (phase) => {
+        const myDebuff = EnemyGenDWU.debuff[0];
+        console.log("addEyeOfTyrantAoE", myDebuff, phase);
+        if (myDebuff[0] !== phase) {
+            activeAoEs.push(Util.donutAoE(300, 300 - Util.tile(7), Util.tile(2), Util.tile(40), 'アイオブタイラントに集合してください'));
+        }
     },
 
     initialize: () => {
@@ -284,9 +439,30 @@ const EnemyGenDWU = {
         EnemyGenDWU.initAoEs();
         speed = 1.2;
 
+        for (let i = -19; i <= 19; i++) {
+            if (i === 6) {
+                const x = 300 + Util.tile(i - 0.2);
+                Util.strokeRect(x - 1, 0, x + 1, 600);
+            }
+            else if (i === -6) {
+                const x = 300 + Util.tile(i + 0.2);
+                Util.strokeRect(x - 1, 0, x + 1, 600);
+            }
+            else {
+                const x = 300 + Util.tile(i);
+                Util.strokeRect(x - 1, 0, x + 1, 600);
+            }
+        }
+
+        for (let i = -19; i <= 19; i++) {
+            const y = 300 + Util.tile(i);
+            Util.strokeRect(0, y - 1, 600, y + 1);
+        }
+
         EnemyGenDWU.addTargetCircle();
         EnemyGenDWU.addPartyList();
         EnemyGenDWU.addCastBar();
+        EnemyGenDWU.addCastBar2();
     },
 
     maybeAddEnemy: (fieldDom) => {
@@ -352,10 +528,16 @@ const EnemyGenDWU = {
             EnemyGenDWU.phase = 2;
         }
         else if (EnemyGenDWU.phase === 2 && time >= 17000) {
+            const isSpineElusivePattern = EnemyGenDWU.debuffIncludes([1, '↑']);
+            const x = isSpineElusivePattern ? Util.tile(5) : Util.tile(7);
+
+            console.log("@@@", x);
+
             // アイオブタイラント&ダーク1
             EnemyGenDWU.addEyeOfTyrant(0, -Util.tile(7));
-            EnemyGenDWU.addDarkJump(Util.tile(7), 0, EnemyGenDWU.getExpectedJob(1, '↑'));
-            EnemyGenDWU.addDarkJump(Util.tile(-7), 0, EnemyGenDWU.getExpectedJob(1, '↓'));
+            EnemyGenDWU.addEyeOfTyrantAoE(1);
+            EnemyGenDWU.addDarkJump(x, 0, EnemyGenDWU.getExpectedJob(1, '↑'));
+            EnemyGenDWU.addDarkJump(-x, 0, EnemyGenDWU.getExpectedJob(1, '↓'));
             EnemyGenDWU.addDarkJump(0, Util.tile(7), EnemyGenDWU.getExpectedJob(1, 'o'));
             EnemyGenDWU.phase = 3;
         }
@@ -370,8 +552,8 @@ const EnemyGenDWU = {
         }
         else if (EnemyGenDWU.phase === 4 && time >= 22400) {
             // 塔1出現
-            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(5), 0);
-            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(-5), 0);
+            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(7), 0);
+            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(-7), 0);
             EnemyGenDWU.addDarkDragonDivePrep(0, Util.tile(7));
             EnemyGenDWU.phase = 5;
         }
@@ -382,91 +564,135 @@ const EnemyGenDWU = {
             } else {
                 EnemyGenDWU.addKoga();
             }
-            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(5), 0, EnemyGenDWU.getExpectedJob(3, '↑'));
-            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(-5), 0, EnemyGenDWU.getExpectedJob(3, '↓'));
+            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(7), 0, EnemyGenDWU.getExpectedJob(3, '↑'));
+            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(-7), 0, EnemyGenDWU.getExpectedJob(3, '↓'));
             EnemyGenDWU.addDarkDragonDiveHit(0, Util.tile(7), EnemyGenDWU.getExpectedJob(3, 'o'));
-            EnemyGenDWU.addGeirskogulAoE(true, true);
+            EnemyGenDWU.addZako(1, '↑');
+            EnemyGenDWU.addZako(1, '↓');
+            EnemyGenDWU.addZako(1, 'o');
             EnemyGenDWU.phase = 6;
         }
-        else if (EnemyGenDWU.phase === 6 && time >= 27000) {
-            // ダーク2
-            EnemyGenDWU.addDarkJump(Util.tile(7), 0, EnemyGenDWU.getExpectedJob(2, '↑'));
-            EnemyGenDWU.addDarkJump(Util.tile(-7), 0, EnemyGenDWU.getExpectedJob(2, '↓'));
+        else if (EnemyGenDWU.phase === 6 && time >= 26200) {
+            // ゲイル1 詠唱開始 (ゲイルの方向確定)
+
+            EnemyGenDWU.addGeirskogulPrepAoE(3, '↑');
+            EnemyGenDWU.addGeirskogulPrepAoE(3, '↓');
+            EnemyGenDWU.addGeirskogulPrepAoE(3, 'o');
+
+            EnemyGenDWU.startCast2("ゲイルスコグル", 4400);
             EnemyGenDWU.phase = 7;
         }
-        else if (EnemyGenDWU.phase === 7 && time >= 30000) {
-            // 牙尾２回目詠唱
-            EnemyGenDWU.startCast(["尾牙の連旋", "牙尾の連旋"][EnemyGenDWU.biga], 6900); // 表示のみ100ms短
+        else if (EnemyGenDWU.phase === 7 && time >= 27000) {
+            // ダーク2
+
+            EnemyGenDWU.addDarkJump(Util.tile(6), Util.tile(-7), EnemyGenDWU.getExpectedJob(2, '↑'));
+            EnemyGenDWU.addDarkJump(Util.tile(-6), Util.tile(-7), EnemyGenDWU.getExpectedJob(2, '↓'));
+
             EnemyGenDWU.phase = 8;
         }
-        else if (EnemyGenDWU.phase == 8 && time >= 30700) {
-            // ゲイル1
-            EnemyGenDWU.addGeirskogul(Util.tile(5), 0, Util.tile(-7), 0);
-            EnemyGenDWU.addGeirskogul(Util.tile(-5), 0, Util.tile(7) / Math.sqrt(2), Util.tile(7) / Math.sqrt(2));
-            EnemyGenDWU.addGeirskogul(0, Util.tile(7),  Util.tile(7), 0);
-            EnemyGenDWU.addGeirskogulAoE(false, false);
+
+        else if (EnemyGenDWU.phase === 8 && time >= 30000) {
+            // 牙尾２回目詠唱
+            EnemyGenDWU.startCast(["尾牙の連旋", "牙尾の連旋"][EnemyGenDWU.biga], 6900); // 表示のみ100ms短
             EnemyGenDWU.phase = 9;
         }
-        else if (EnemyGenDWU.phase == 9 && time >= 32400) {
-            // 塔2出現
-            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(5), 0);
-            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(-5), 0);
+        else if (EnemyGenDWU.phase == 9 && time >= 30700) {
+            // ゲイル1
+            EnemyGenDWU.addGeirskogul(Util.tile(7), 0, Util.tile(8), 0);
+            EnemyGenDWU.addGeirskogul(Util.tile(-7), 0, Util.tile(-8), 0);
+            EnemyGenDWU.addGeirskogul(0, Util.tile(7), 0, Util.tile(8));
+            EnemyGenDWU.addGeirskogulAoE('↑');
+            EnemyGenDWU.addGeirskogulAoE('↓');
+            EnemyGenDWU.addGeirskogulAoE('o');
             EnemyGenDWU.phase = 10;
         }
-        else if (EnemyGenDWU.phase == 10 && time >= 33600) {
-            // 塔2
-            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(5), 0, EnemyGenDWU.getExpectedJob(1, '↑'));
-            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(-5), 0, EnemyGenDWU.getExpectedJob(1, '↓'));
-            EnemyGenDWU.addGeirskogulAoE(false, true);
+        else if (EnemyGenDWU.phase == 10 && time >= 32400) {
+            // 塔2出現
+            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(6), Util.tile(-7));
+            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(-6), Util.tile(-7));
             EnemyGenDWU.phase = 11;
         }
-        else if (EnemyGenDWU.phase == 11 && time >= 37000) {
-            // アイオブタイラント& ダーク3
-            EnemyGenDWU.addEyeOfTyrant(0, -Util.tile(7));
-            EnemyGenDWU.addDarkJump(Util.tile(7), 0, EnemyGenDWU.getExpectedJob(3, '↑'));
-            EnemyGenDWU.addDarkJump(Util.tile(-7), 0, EnemyGenDWU.getExpectedJob(3, '↓'));
-            EnemyGenDWU.addDarkJump(0, Util.tile(7), EnemyGenDWU.getExpectedJob(3, 'o'));
+        else if (EnemyGenDWU.phase == 11 && time >= 33600) {
+            // 塔2
+            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(6), Util.tile(-7), EnemyGenDWU.getExpectedJob(1, '↑'));
+            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(-6), Util.tile(-7), EnemyGenDWU.getExpectedJob(1, '↓'));
+            EnemyGenDWU.addZako(2, '↑');
+            EnemyGenDWU.addZako(2, '↓');
             EnemyGenDWU.phase = 12;
         }
-        else if (EnemyGenDWU.phase == 12 && time >= 40300) {
+        else if (EnemyGenDWU.phase === 12 && time >= 36200) {
+            // ゲイル2 詠唱開始 (ゲイルの方向確定)
+
+            EnemyGenDWU.addGeirskogul2PrepAoE(EnemyGenDWU.getExpectedJob(1, '↑'));
+            EnemyGenDWU.addGeirskogul2PrepAoE(EnemyGenDWU.getExpectedJob(1, '↓'));
+
+            EnemyGenDWU.startCast2("ゲイルスコグル", 4400);
+            EnemyGenDWU.phase = 13;
+        }
+        else if (EnemyGenDWU.phase == 13 && time >= 37000) {
+            // アイオブタイラント& ダーク3
+            const isSpineElusivePattern = EnemyGenDWU.debuffIncludes([3, '↑']);
+            const x = isSpineElusivePattern ? Util.tile(5) : Util.tile(7);
+
+            EnemyGenDWU.addEyeOfTyrant(0, -Util.tile(7));
+            EnemyGenDWU.addEyeOfTyrantAoE(3);
+            EnemyGenDWU.addDarkJump(x, 0, EnemyGenDWU.getExpectedJob(3, '↑'));
+            EnemyGenDWU.addDarkJump(-x, 0, EnemyGenDWU.getExpectedJob(3, '↓'));
+            EnemyGenDWU.addDarkJump(0, Util.tile(7), EnemyGenDWU.getExpectedJob(3, 'o'));
+            EnemyGenDWU.phase = 14;
+        }
+        else if (EnemyGenDWU.phase == 14 && time >= 40300) {
             // 牙尾&ゲイル2
             if (EnemyGenDWU.biga == 0) {
                 EnemyGenDWU.addJabi();
             } else {
                 EnemyGenDWU.addKoga();
             }
-            EnemyGenDWU.addGeirskogul(Util.tile(5), 0, Util.tile(-7), 0);
-            EnemyGenDWU.addGeirskogul(Util.tile(-5), 0, 0, Util.tile(-7));
-            EnemyGenDWU.addGeirskogulAoE(true, false);
-            EnemyGenDWU.phase = 13;
+            EnemyGenDWU.addGeirskogul(Util.tile(6), Util.tile(-7), 0, Util.tile(-7));
+            EnemyGenDWU.addGeirskogul(Util.tile(-6), Util.tile(-7), 0, Util.tile(-7));
+            EnemyGenDWU.addGeirskogul2AoE();
+            EnemyGenDWU.phase = 15;
         }
-        else if (EnemyGenDWU.phase == 13 && time >= 42400) {
+        else if (EnemyGenDWU.phase == 15 && time >= 42400) {
             // 塔3出現
-            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(5), 0);
-            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(-5), 0);
+            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(7), 0);
+            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(-7), 0);
             EnemyGenDWU.addDarkDragonDivePrep(0, Util.tile(7));
-            EnemyGenDWU.phase = 14;
+            EnemyGenDWU.phase = 16;
         }
-        else if (EnemyGenDWU.phase == 14 && time >= 43600) {
+        else if (EnemyGenDWU.phase == 16 && time >= 43600) {
             // 牙尾&塔3
             if (EnemyGenDWU.biga == 0) {
                 EnemyGenDWU.addKoga();
             } else {
                 EnemyGenDWU.addJabi();
             }
-            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(5), 0, EnemyGenDWU.getExpectedJob(2, '↑'));
-            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(-5), 0, EnemyGenDWU.getExpectedJob(2, '↓'));
+            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(7), 0, EnemyGenDWU.getExpectedJob(2, '↑'));
+            EnemyGenDWU.addDarkDragonDiveHit(Util.tile(-7), 0, EnemyGenDWU.getExpectedJob(2, '↓'));
             EnemyGenDWU.addDarkDragonDiveHit(0, Util.tile(7), EnemyGenDWU.getExpectedJob(1, 'o'));
-            EnemyGenDWU.addGeirskogulAoE(true, true);
-            EnemyGenDWU.phase = 15;
+            EnemyGenDWU.addZako(3, '↑');
+            EnemyGenDWU.addZako(3, '↓');
+            EnemyGenDWU.addZako(3, 'o');
+            EnemyGenDWU.phase = 17;
         }
-        else if (EnemyGenDWU.phase === 15 && time >= 50700) {
+        else if (EnemyGenDWU.phase == 17 && time >= 46200) {
+            // ゲイル3詠唱開始（ゲイルの方向確定）
+            EnemyGenDWU.addGeirskogulPrepAoE(2, '↑');
+            EnemyGenDWU.addGeirskogulPrepAoE(2, '↓');
+            EnemyGenDWU.addGeirskogulPrepAoE(1, 'o');
+            EnemyGenDWU.startCast2("ゲイルスコグル", 4400);
+
+            EnemyGenDWU.phase = 18;
+        }
+        else if (EnemyGenDWU.phase === 18 && time >= 50700) {
             // ゲイル3
-            EnemyGenDWU.addGeirskogul(Util.tile(5), 0, Util.tile(-7), 0);
-            EnemyGenDWU.addGeirskogul(Util.tile(-5), 0, Util.tile(7) / Math.sqrt(2), Util.tile(7) / Math.sqrt(2));
-            EnemyGenDWU.addGeirskogul(0, Util.tile(7),  Util.tile(7), 0);
-            EnemyGenDWU.addGeirskogulAoE(false, false);
-            EnemyGenDWU.phase = 16;
+            EnemyGenDWU.addGeirskogul(Util.tile(7), 0, Util.tile(8), 0);
+            EnemyGenDWU.addGeirskogul(Util.tile(-7), 0, Util.tile(-8), 0);
+            EnemyGenDWU.addGeirskogul(0, Util.tile(7), 0, Util.tile(8));
+            EnemyGenDWU.addGeirskogulAoE('↑');
+            EnemyGenDWU.addGeirskogulAoE('↓');
+            EnemyGenDWU.addGeirskogulAoE('o');
+            EnemyGenDWU.phase = 19;
             gameActive = false;
             initialized = false;
         }

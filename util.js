@@ -50,6 +50,33 @@ const Util = {
     return circle;
   },
 
+  strokeRect: (x1, y1, x2, y2) => {
+    console.log("strokeRect", x1, y1, x2, y2);
+    const rect = document.createElement("div");
+    rect.style.width = `${x2-x1}px`;
+    rect.style.height = `${y2-y1}px`;
+    rect.style.backgroundColor = "rgba(200, 200, 200, 0.2)";
+    rect.style.left = `${x1}px`;
+    rect.style.top = `${y1}px`;
+    rect.style.display = "inline-block";
+    rect.style.position = "absolute";
+    fieldDom.appendChild(rect);
+    return rect;
+  },
+
+  addImage: (imgUrl, x, y, width, height) => {
+    const img = document.createElement("img");
+    img.src = imgUrl;
+    img.style.width = width;
+    img.style.height = height;
+    img.style.left = x - width / 2;
+    img.style.top = y - height / 2;
+    img.style.display = "inline-block";
+    img.style.position = "absolute";
+    fieldDom.appendChild(img);
+    return img;
+  },
+
   addDonut: (x, y, rIn, rOut) => {
     const circle = document.createElement("div");
     circle.style.width = `${rIn*2}px`;
