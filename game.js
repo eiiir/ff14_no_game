@@ -27,19 +27,33 @@ const afterEverythingLoaded = () => {
 	if (cookies["job"]) {
 		Player.changeJob(cookies["job"]);
 	}
-	const dwuJob = window.localStorage.getItem("dwu_job");
+	const dwuJob = getFromParamOrStorage("dwu_job");
 	if (dwuJob) {
 		document.getElementById("dwu_job").selectedIndex = parseInt(dwuJob);
 	}
-	const dwuRole = window.localStorage.getItem("dwu_role");
+	const dwuRole = getFromParamOrStorage("dwu_role");
 	if (dwuRole) {
 		document.getElementById("dwu_role").selectedIndex = parseInt(dwuRole);
 	}
-	const timeSpeed = window.localStorage.getItem("timeSpeed");
+	const timeSpeed = getFromParamOrStorage("timeSpeed");
 	if (timeSpeed) {
 		const timeSpeedElem = document.getElementById('timeSpeed');
 		timeSpeedElem.selectedIndex = parseInt(timeSpeed);
 		Time.setTimeSpeed(Number(timeSpeedElem.value));
+	}
+	const stage = getFromParamOrStorage("stage");
+	if (stage) {
+		document.getElementById("stage").selectedIndex = parseInt(stage);
+	}
+}
+
+const getFromParamOrStorage = (key) => {
+	const urlParams = new URLSearchParams(window.location.search);
+	const queryParam = urlParams.get(key);
+	if (queryParam) {
+		return queryParam;
+	} else {
+		return window.localStorage.getItem(key);
 	}
 }
 
