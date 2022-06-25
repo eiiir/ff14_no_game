@@ -469,9 +469,9 @@ const EnemyGenDWU = {
         if (!initialized) {
             EnemyGenDWU.initialize(fieldDom);
             initialize();
-      }
-      EnemyGenDWU.addTimeline();
-      EnemyGenDWU.checkAlive();
+        }
+        EnemyGenDWU.addTimeline();
+        EnemyGenDWU.checkAlive();
     },
 
     checkAlive: () => {

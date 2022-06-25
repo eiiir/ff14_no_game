@@ -35,6 +35,12 @@ const afterEverythingLoaded = () => {
 	if (dwuRole) {
 		document.getElementById("dwu_role").selectedIndex = parseInt(dwuRole);
 	}
+	const timeSpeed = window.localStorage.getItem("timeSpeed");
+	if (timeSpeed) {
+		const timeSpeedElem = document.getElementById('timeSpeed');
+		timeSpeedElem.selectedIndex = parseInt(timeSpeed);
+		Time.setTimeSpeed(Number(timeSpeedElem.value));
+	}
 }
 
 const onStageChange = (obj) => {
