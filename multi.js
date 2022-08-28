@@ -188,8 +188,8 @@ window.MultiPlay = {
         window.MultiPlay.dataHandlers.forEach(handler => handler(data));
     },
 
-    leave: () => {
-        window.MultiPlay.cleanup(window.MultiPlay.currentUserName);
+    leave: async () => {
+        await window.MultiPlay.cleanup(window.MultiPlay.currentUserName);
         window.MultiPlay.currentUserName = undefined;
     },
 
@@ -236,4 +236,52 @@ window.addEventListener('load', () => {
         joinButton.disabled = false;
         nameInput.disabled = false;
     };
+
+    setInterval(() => {
+        const playerDom = document.getElementById('player');
+        const playerIconDom = document.getElementById("playerIcon");
+        console.log("sending: " + JSON.stringify({
+            left: playerDom.style.left,
+            top: playerDom.style.top,
+            image: playerIconDom.src,
+            name: nameInput.value,
+        }));
+        window.MultiPlay.broadcast({
+            left: playerDom.style.left,
+            top: playerDom.style.top,
+            image: playerIconDom.src,
+            name: nameInput.value,
+        });
+    }, 100);
+
+    window.MultiPlay.onData(data => {
+        console.log("receiving: " + JSON.stringify(data));
+        let remotePlayerDom = document.getElementById(`remotePlayer-${data.name}`);
+        let remotePlayerIconDom = document.getElementById(`remotePlayerIcon-${data.name}`);
+        console.log(remotePlayerDom);
+        if (remotePlayerDom === null) {
+            remotePlayerDom = document.createElement('div');
+            remotePlayerDom.style = 'position:absolute;width:50px;height:50px;top:275px;left:275px;z-index:1000;';
+            remotePlayerDom.id = `remotePlayer-${data.name}`;
+            const innerDivDom = document.createElement('div');
+            innerDivDom.style = 'position:relative';
+            remotePlayerIconDom = document.createElement('img');
+            remotePlayerIconDom.src = 'img/whm.png';
+            remotePlayerIconDom.width = 50;
+            remotePlayerIconDom.height = 50;
+            remotePlayerIconDom.id = `remotePlayerIcon-${data.name}`;
+
+            innerDivDom.appendChild(remotePlayerIconDom);
+            remotePlayerDom.appendChild(innerDivDom);
+
+            const fieldDom = document.getElementById('field');
+            fieldDom.appendChild(remotePlayerDom);
+            console.log("appending a new remote player element for " + data.name);
+        }
+        remotePlayerDom.style.left = data.left;
+        remotePlayerDom.style.top = data.top;
+        if (remotePlayerIconDom.src !== data.image) {
+            remotePlayerIconDom.src = data.image;
+        }
+    })
 })
