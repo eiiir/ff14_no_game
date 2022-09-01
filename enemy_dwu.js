@@ -23,6 +23,21 @@ const EnemyGenDWU = {
     cast2Div: undefined,
     activeAoEs: [],
 
+    reset: () => {
+        EnemyGenDWU.phase = 0;
+        EnemyGenDWU.role = 0;
+        EnemyGenDWU.debuff = undefined;
+        EnemyGenDWU.partyListDiv = undefined;
+        EnemyGenDWU.castDiv = undefined;
+        EnemyGenDWU.cast2Div = undefined;
+        EnemyGenDWU.activeAoEs = [];
+        for (dom of fieldDom.childNodes) {
+            if (dom != timerDom && dom != playerDom) {
+                fieldDom.removeChild(dom);
+            }
+        }
+    },
+
     debuffIncludes: (dbf) => {
         return EnemyGenDWU.debuff.some((d) => {
             return d[0] === dbf[0] && d[1] === dbf[1];
@@ -431,9 +446,7 @@ const EnemyGenDWU = {
     },
 
     initialize: () => {
-        while (fieldDom.children.length > 2) {
-            fieldDom.removeChild(fieldDom.children[1]);
-        }
+        EnemyGenDWU.reset();
         EnemyGenDWU.initDebuff();
         EnemyGenDWU.initBiga();
         EnemyGenDWU.initAoEs();
@@ -767,10 +780,10 @@ const EnemyGenDWU = {
             }),
             event(22400, () => {
                 // 塔1出現
-            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(7), 0);
-            EnemyGenDWU.addDarkDragonDivePrep(Util.tile(-7), 0);
-            EnemyGenDWU.addDarkDragonDivePrep(0, Util.tile(7));
-            EnemyGenDWU.phase = 5;
+                EnemyGenDWU.addDarkDragonDivePrep(Util.tile(7), 0);
+                EnemyGenDWU.addDarkDragonDivePrep(Util.tile(-7), 0);
+                EnemyGenDWU.addDarkDragonDivePrep(0, Util.tile(7));
+                EnemyGenDWU.phase = 5;
             }),
             event(23600, () => {
                 // 牙尾+塔1
