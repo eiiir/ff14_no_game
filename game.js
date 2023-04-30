@@ -63,6 +63,9 @@ const onStageChange = (obj) => {
 	if (obj.value == "dwu") {
 		dwuJobSelect.style.visibility = "visible";
 		dwuRoleSelect.style.visibility = "visible";
+	} else if (obj.value == "eyes") {
+		dwuJobSelect.style.visibility = "visible";
+		dwuRoleSelect.style.visibility = "hidden";
 	}
 	else {
 		dwuJobSelect.style.visibility = "hidden";
@@ -241,6 +244,9 @@ const tick = (elapsedMilliSeconds) => {
 			break;
 		case 'dwu':
 			EnemyGenDWU.maybeAddEnemy(fieldDom);
+			break;
+		case 'eyes':
+			EnemyGenEyes.maybeAddEnemy();
 			break;
 		default:
 			EnemyGen.maybeAddEnemy(fieldDom);

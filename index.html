@@ -45,6 +45,7 @@
 				<option value="e7s">共鳴3層</option>
 				<option value="e12s">再生4層</option>
 				<option value="dwu" selected>堕天のドラゴンダイブ</option>
+				<option value="eyes">邪竜の両眼</option>
 			</select>
 			<select id="dwu_job" onchange="window.localStorage.setItem('dwu_job', this.selectedIndex)">
 				<option value="Warrior">戦士</option>
@@ -107,13 +108,14 @@
 		<br/>
 		<div id="copyright">(C) SQUARE ENIX CO., LTD. All Rights Reserved.</div>
 		<script src="./time.js"></script>
+		<script src="./util.js"></script>
 		<script src="./enemy.js"></script>
 		<script src="./enemy_e7s.js"></script>
 		<script src="./enemy_e12s.js"></script>
 		<script src="./enemy_dwu.js"></script>
+		<script src="./enemy_eyes.js"></script>
 		<script src="./game.js"></script>
 		<script src="./player.js"></script>
-		<script src="./util.js"></script>
 		<script type="module" src="./multi.js"></script>
 		<script>afterEverythingLoaded();</script>
 	</body>
