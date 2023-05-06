@@ -461,6 +461,7 @@ const EnemyGenWS = {
           EnemyGenWS.activeAoEs.push(Util.donutAoE(560, 150, 50, Util.tile(999), 'スカイワードリープをまき散らしました'));
           const aoeDiv = Util.addCircle(560, 150, 50, "lightblue");
           Util.removeLater(aoeDiv, 1000);
+          document.getElementById("target-skywardleap").style.display = 'none';
         } else {
           EnemyGenWS.activeAoEs.push(Util.donutAoE(15, 300, 50, Util.tile(999), 'ツイスターを変なところに捨てました'));
           const aoeDiv = Util.addCircle(15, 300, 50, "lightblue");
