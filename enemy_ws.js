@@ -394,7 +394,7 @@ const EnemyGenWS = {
           Util.maintainLineBetween(
             () => [player.x, player.y],
             () => EnemyGenWS.leftSpiralPearceOrigin,
-            () => (Date.now() - startTime > 6000)
+            () => (Date.now() - startTime > 7000)
           );
         } else {
           // static dot & line
@@ -409,7 +409,7 @@ const EnemyGenWS = {
           Util.maintainLineBetween(
             () => [player.x, player.y],
             () => EnemyGenWS.rightSpiralPearceOrigin,
-            () => (Date.now() - startTime > 6000)
+            () => (Date.now() - startTime > 7000)
           );
         } else {
           // static dot & line
