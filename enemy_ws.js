@@ -421,36 +421,44 @@ const EnemyGenWS = {
       event(2000, () => {
         // Start dots
         if (!EnemyGenWS.flags.leftSpiralPearceTarget) {
-          const dot = EnemyGenWS.addDot(300, 300, 400, 560, 4000);
+          const dot = EnemyGenWS.addDot(300, 300, 400, 560, 5000);
           Util.maintainLineBetween(
             () => [dot.x, dot.y],
             () => EnemyGenWS.leftSpiralPearceOrigin,
-            () => (Date.now() - startTime > 6000)
+            () => (Date.now() - startTime > 7000)
           );
         }
         if (!EnemyGenWS.flags.rightSpiralPearceTarget) {
-          const dot = EnemyGenWS.addDot(300, 300, 200, 560, 4000);
+          const dot = EnemyGenWS.addDot(300, 300, 200, 560, 5000);
           Util.maintainLineBetween(
             () => [dot.x, dot.y],
             () => EnemyGenWS.rightSpiralPearceOrigin,
-            () => (Date.now() - startTime > 6000)
+            () => (Date.now() - startTime > 7000)
           );
         }
       }),
-      event(5000, () => {
+      event(6000, () => {
         // サンダーウイングのデバフつく
         EnemyGenWS.addthunderWingDebuf();
       }),
-      event(6000, () => {
+      event(7000, () => {
         // ツイスターダイブ着弾
         if (EnemyGenWS.flags.leftSpiralPearceTarget) {
-          EnemyGenWS.activeAoEs.push(Util.donutAoE(400, 560, Util.tile(2), Util.tile(999), 'スパイラルピアスをまき散らしました'));
+          EnemyGenWS.activeAoEs.push(Util.donutAoE(400, 560, 50, Util.tile(999), 'スパイラルピアスをまき散らしました'));
+          const aoeDiv = Util.addCircle(400, 560, 50, "lightblue");
+          Util.removeLater(aoeDiv, 1000);
         } else if (EnemyGenWS.flags.rightSpiralPearceTarget) {
-          EnemyGenWS.activeAoEs.push(Util.donutAoE(200, 560, Util.tile(2), Util.tile(999), 'スパイラルピアスをまき散らしました'));
+          EnemyGenWS.activeAoEs.push(Util.donutAoE(200, 560, 50, Util.tile(999), 'スパイラルピアスをまき散らしました'));
+          const aoeDiv = Util.addCircle(200, 560, 50, "lightblue");
+          Util.removeLater(aoeDiv, 1000);
         } else if (EnemyGenWS.flags.skywardLeapTarget) {
-          EnemyGenWS.activeAoEs.push(Util.donutAoE(560, 150, Util.tile(3), Util.tile(999), 'スカイワードリープをまき散らしました'));
+          EnemyGenWS.activeAoEs.push(Util.donutAoE(560, 150, 50, Util.tile(999), 'スカイワードリープをまき散らしました'));
+          const aoeDiv = Util.addCircle(560, 150, 50, "lightblue");
+          Util.removeLater(aoeDiv, 1000);
         } else {
-          EnemyGenWS.activeAoEs.push(Util.donutAoE(15, 300, Util.tile(2), Util.tile(999), 'ツイスターを変なところに捨てました'));
+          EnemyGenWS.activeAoEs.push(Util.donutAoE(15, 300, 50, Util.tile(999), 'ツイスターを変なところに捨てました'));
+          const aoeDiv = Util.addCircle(15, 300, 50, "lightblue");
+          Util.removeLater(aoeDiv, 1000);
         }
         // TODO：スパイラルピアス、ツイスターダイブの当たり判定を実装
         // 多分無くても上のassertで死ぬので一旦省略 
@@ -476,7 +484,7 @@ const EnemyGenWS = {
         EnemyGenWS.elementsToBeRemovedOnInit.push(grinoDot);
         EnemyGenWS.elementsToBeRemovedOnInit.push(shariDot);
       }),
-      event(7000, () => {
+      event(8000, () => {
         //ツイスター発生
         for (const [x, y] of EnemyGenWS.twisterLocations) {
           const circle = Util.addCircle(x, y, 20, "darkgreen");
@@ -486,11 +494,11 @@ const EnemyGenWS = {
           );
         }
       }),
-      event(8000, () => {
+      event(9000, () => {
         // アスカロンメルシー詠唱開始
         EnemyGenWS.startCast("レベレーション・アスカロンメルシー", 4000);
       }),
-      event(12000, () => {
+      event(13000, () => {
         // アスカロンメルシー
         const defaultAngle = { // X軸との角度 [-180, 180]
           "Warrior": 60,
@@ -525,7 +533,7 @@ const EnemyGenWS = {
           Util.removeLater(aoe, 500);
         }
       }),
-      event(13000, () => {
+      event(14000, () => {
         // カータライズ位置確定
         if (!EnemyGenWS.flags.cautarizeTarget) {
           return;
@@ -545,31 +553,31 @@ const EnemyGenWS = {
         // ヘヴンリキッド1発目
         EnemyGenWS.addHeavenLiquid();
       }),
-      event(14000, () => {
+      event(15000, () => {
         // エンプティディメンション詠唱開始
         EnemyGenWS.startCast("エンプティディメンション", 5000);
         // ヘヴンリキッド2発目
         EnemyGenWS.addHeavenLiquid();
       }),
-      event(15000, () => {
+      event(16000, () => {
         // ヘヴンリキッド3発目
         EnemyGenWS.addHeavenLiquid();
       }),
-      event(16000, () => {
+      event(17000, () => {
         // ヘヴンリキッド4発目
         EnemyGenWS.addHeavenLiquid();
       }),
-      event(17000, () => {
+      event(18000, () => {
         // ヘヴンリキッド5発目
         EnemyGenWS.addHeavenLiquid();
       }),
-      event(18000, () => {
+      event(19000, () => {
         // エンプティディメンションAOE描画
         const [centerX, centerY] = EnemyGenWS.flags.emptyDimensionIsNorth ? EnemyGenWS.grinoLocationNorth : EnemyGenWS.grinoLocationSouth;
         const aoeDiv = Util.addDonut(centerX, centerY, 100, 1000);
         Util.removeLater(aoeDiv, 1500);
       }),
-      event(19000, () => {
+      event(20000, () => {
         // エンプティディメンション着弾
         const [centerX, centerY] = EnemyGenWS.flags.emptyDimensionIsNorth ? EnemyGenWS.grinoLocationNorth : EnemyGenWS.grinoLocationSouth;
         EnemyGenWS.activeAoEs.push(
@@ -580,9 +588,9 @@ const EnemyGenWS = {
         const tolerance = 40;
         const thunderWingR = 75; //適当
         const expectedPositions = EnemyGenWS.flags.emptyDimensionIsNorth ? 
-            [[EnemyGenWS.grinoLocationNorth[0] - 50, EnemyGenWS.grinoLocationNorth[1] - 50], [EnemyGenWS.grinoLocationNorth[0] + 50, EnemyGenWS.grinoLocationNorth[1] - 50]]
+            [[EnemyGenWS.grinoLocationNorth[0] + 50, EnemyGenWS.grinoLocationNorth[1] - 50], [EnemyGenWS.grinoLocationNorth[0] - 50, EnemyGenWS.grinoLocationNorth[1] - 50]]
             : 
-            [[EnemyGenWS.grinoLocationSouth[0] + 50, EnemyGenWS.grinoLocationSouth[1] + 50], [EnemyGenWS.grinoLocationSouth[0] - 50, EnemyGenWS.grinoLocationSouth[1] + 50]]
+            [[EnemyGenWS.grinoLocationSouth[0] - 50, EnemyGenWS.grinoLocationSouth[1] + 50], [EnemyGenWS.grinoLocationSouth[0] + 50, EnemyGenWS.grinoLocationSouth[1] + 50]]
         const myJob = EnemyGenWS.getMyJob();
         [0, 1].forEach((i) => {
           if (EnemyGenWS.flags.thunderWingTargets[i] == myJob) {
@@ -600,7 +608,7 @@ const EnemyGenWS = {
           }
         })
       }),
-      event(20000, () => {
+      event(21000, () => {
         //終わり
       }),
     ];
@@ -627,10 +635,10 @@ const EnemyGenWS = {
     }
     const aoeRadius = 75; //目分量
     const [aoeX, aoeY] = [player.x, player.y];
+    const aoeDiv = Util.addCircle(aoeX, aoeY, aoeRadius);
+    Util.removeLater(aoeDiv, 10000);
     setTimeout(() => {
       EnemyGenWS.activeAoEs.push(Util.circleAoE(aoeX, aoeY, aoeRadius, "ヘヴンリキッドを踏みました", 10000));
-      const aoeDiv = Util.addCircle(aoeX, aoeY, aoeRadius);
-      Util.removeLater(aoeDiv, 10000);
     }, 1000);
   }
 };
