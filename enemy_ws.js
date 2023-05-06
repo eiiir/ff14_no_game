@@ -91,13 +91,19 @@ const EnemyGenWS = {
     switch (lineElem.value) {
       case "left": {
         forcedFlags.leftSpiralPearceTarget = true;
+        forcedFlags.rightSpiralPearceTarget = false;
+        forcedFlags.skywardLeapTarget = false;
         break;
       }
       case "right": {
+        forcedFlags.leftSpiralPearceTarget = false;
         forcedFlags.rightSpiralPearceTarget = true;
+        forcedFlags.skywardLeapTarget = false;
         break;
       }
       case "skyward": {
+        forcedFlags.leftSpiralPearceTarget = false;
+        forcedFlags.rightSpiralPearceTarget = false;
         forcedFlags.skywardLeapTarget = true;
         break;
       }
