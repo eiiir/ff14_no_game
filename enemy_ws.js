@@ -534,24 +534,23 @@ const EnemyGenWS = {
         }
       }),
       event(14000, () => {
-        // カータライズ位置確定
-        if (!EnemyGenWS.flags.cautarizeTarget) {
-          return;
-        }
-        document.getElementById("target-cauterize").style.display = 'none';
-        // カータライズの捨て場所チェック
-        const tolerance = 30;
-        const expectedAngle = EnemyGenWS.flags.emptyDimensionIsNorth ? -90 : 90;
-        const actualAngle = -Math.atan2(player.y - 300, player.x - 300) / Math.PI * 180; // X軸との角度 [-180, 180]
-        const diffAngle = (x, y) => { return (x - y + 540) % 360 - 180 }; // [-180, 180]
-        var diffToLeft = diffAngle((expectedAngle + tolerance), actualAngle); // [-180, 180] 
-        var diffToRight = diffAngle((expectedAngle - tolerance), actualAngle); // [-180, 180] 
-        EnemyGenWS.activeAoEs.push({
-          collision: () => diffToLeft < 0 || diffToRight > 0,
-          reason: `カータライズを変なところに捨てました(南北±30°許容)`
-        });
         // ヘヴンリキッド1発目
         EnemyGenWS.addHeavenLiquid();
+        if (EnemyGenWS.flags.cautarizeTarget) {
+          // カータライズ位置確定
+          document.getElementById("target-cauterize").style.display = 'none';
+          // カータライズの捨て場所チェック
+          const tolerance = 30;
+          const expectedAngle = EnemyGenWS.flags.emptyDimensionIsNorth ? -90 : 90;
+          const actualAngle = -Math.atan2(player.y - 300, player.x - 300) / Math.PI * 180; // X軸との角度 [-180, 180]
+          const diffAngle = (x, y) => { return (x - y + 540) % 360 - 180 }; // [-180, 180]
+          var diffToLeft = diffAngle((expectedAngle + tolerance), actualAngle); // [-180, 180] 
+          var diffToRight = diffAngle((expectedAngle - tolerance), actualAngle); // [-180, 180] 
+          EnemyGenWS.activeAoEs.push({
+            collision: () => diffToLeft < 0 || diffToRight > 0,
+            reason: `カータライズを変なところに捨てました(南北±30°許容)`
+          });
+        }
       }),
       event(15000, () => {
         // エンプティディメンション詠唱開始
