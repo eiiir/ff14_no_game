@@ -26,12 +26,13 @@ const Util = {
     return circle;
   },
 
-  circleAoE: (x, y, r, reason) => {
+  circleAoE: (x, y, r, reason, removeAfter = undefined) => {
     return {
       collision: (px, py) => {
         return Util.distance(x, y, px, py) < r;
       },
-      reason
+      reason,
+      removeAt: removeAfter ? removeAfter + Date.now() : undefined
     };
   },
 
@@ -92,6 +93,13 @@ const Util = {
     return circle;
   },
 
+  addPiecut: (centerX, centerY, r, tiltFromYAxis /*[-180,180]*/, angle /*[0, 360]*/,  color = "rgba(255, 110, 110, 0.5)") => {
+    const div = Util.addCircle(centerX, centerY, r, color);
+    div.style.background = `conic-gradient(${color} ${angle}deg, transparent ${angle}deg)`;
+    div.style.transform = `rotate(${tiltFromYAxis - angle/2}deg)`;
+    return div;
+  },
+
   donutAoE: (x, y, rIn, rOut, reason) => {
     return {
       collision: (px, py) => {
@@ -102,12 +110,18 @@ const Util = {
     };
   },
 
-  addBoldLine: (x1, y1, x2, y2, width, length) => {
+  addBoldLine: (x1, y1, x2, y2, width, length = undefined, lineElement = undefined) => {
     if (!length) {
         length = Util.distance(x1, y1, x2, y2);
     }
+    var rect;
+    if (!lineElement) {
+      rect = document.createElement("div");
+      fieldDom.appendChild(rect);
+    } else {
+      rect = lineElement;
+    }
 
-    const rect = document.createElement("div");
     rect.style.width = `${length}px`;
     rect.style.height = `${width}px`;
     rect.style.backgroundColor = "rgba(255, 110, 110, 0.5)";
@@ -119,7 +133,6 @@ const Util = {
     const rotdeg = Math.atan2(y2 - y1, x2 - x1) / Math.PI * 180;
     rect.style.transformOrigin = "left center";
     rect.style.transform = `rotate(${rotdeg}deg)`;
-    fieldDom.appendChild(rect);
     return rect;
   },
 
@@ -150,5 +163,25 @@ const Util = {
 
   tile: (t) => {
       return t * 15;
+  },
+
+  maintainLineBetween: (xyProvider1, xyProvider2, deleteFlagProvider) => {
+    var lineDiv = undefined;
+    const interval = setInterval(() => {
+      const deleteFlag = deleteFlagProvider();
+      if (deleteFlag || !gameActive) {
+        if (lineDiv) {
+          fieldDom.removeChild(lineDiv);
+        }
+        clearInterval(interval);
+      }
+      const [x1, y1] = xyProvider1();
+      const [x2, y2] = xyProvider2();
+      if (!lineDiv) {
+        lineDiv = document.createElement("div");
+        fieldDom.appendChild(lineDiv);
+      }
+      Util.addBoldLine(x1, y1, x2, y2, 5, undefined, lineDiv);
+    }, 1000/60);
   }
 };

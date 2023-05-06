@@ -60,16 +60,23 @@ const getFromParamOrStorage = (key) => {
 const onStageChange = (obj) => {
 	const dwuJobSelect = document.getElementById("dwu_job");
 	const dwuRoleSelect = document.getElementById("dwu_role");
+	const wsOptions = document.getElementById("ws_options");
 	if (obj.value == "dwu") {
 		dwuJobSelect.style.visibility = "visible";
 		dwuRoleSelect.style.visibility = "visible";
+		wsOptions.style.display = "none";
 	} else if (obj.value == "eyes") {
 		dwuJobSelect.style.visibility = "visible";
 		dwuRoleSelect.style.visibility = "hidden";
-	}
-	else {
+		wsOptions.style.display = "none";
+	} else if (obj.value == "ws") {
+		dwuJobSelect.style.visibility = "visible";
+		dwuRoleSelect.style.visibility = "hidden";
+		wsOptions.style.display = "initial";
+	} else {
 		dwuJobSelect.style.visibility = "hidden";
 		dwuRoleSelect.style.visibility = "hidden";
+		wsOptions.style.display = "none";
 	}
 }
 
@@ -247,6 +254,9 @@ const tick = (elapsedMilliSeconds) => {
 			break;
 		case 'eyes':
 			EnemyGenEyes.maybeAddEnemy();
+			break;
+		case 'ws':
+			EnemyGenWS.maybeAddEnemy();
 			break;
 		default:
 			EnemyGen.maybeAddEnemy(fieldDom);

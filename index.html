@@ -22,6 +22,12 @@
 						<div id="darkness-debuff" style="display:none">
 							<div><img src="darkness.png" width="25px" height="25px"></div>
 						</div>
+						<div id="target-skywardleap" style="display:none">
+							<div><img src="img/skyward_leap.png" width="25px" height="25px"></div>
+						</div>
+						<div id="target-cauterize" style="display:none">
+							<div><img src="img/cauterize.png" width="25px" height="25px"></div>
+						</div>
 					</div>
 					<div style="left:20px; top:20px; width:10px;height:10px;background-color: dodgerblue; border-radius:5px; position:absolute;"></div>
 				</div>
@@ -44,8 +50,9 @@
 				<option value="normal">ノーマル</option>
 				<option value="e7s">共鳴3層</option>
 				<option value="e12s">再生4層</option>
-				<option value="dwu" selected>堕天のドラゴンダイブ</option>
+				<option value="dwu">堕天のドラゴンダイブ</option>
 				<option value="eyes">邪竜の両眼</option>
+				<option value="ws" selected>至天の陣：風槍</option>
 			</select>
 			<select id="dwu_job" onchange="window.localStorage.setItem('dwu_job', this.selectedIndex)">
 				<option value="Warrior">戦士</option>
@@ -78,6 +85,50 @@
 				<option value="0.8">x0.8</option>
 				<option value="0.5">x0.5</option>
 			</select>
+		</div>
+		<div id="ws_options">
+			<div>
+				<label for="ws_option_line">スパイラルピアス＆スカイワードリープ</label>
+				<select id="ws_option_line">
+					<option value="random">ランダム</option>
+					<option value="left">左から線</option>
+					<option value="right">右から線</option>
+					<option value="skyward">スカイワードリープ</option>
+					<option value="no">無職</option>
+				</select>
+			</div>
+			<div>
+				<label for="ws_option_cauterize">カータライズ</label>
+				<select id="ws_option_cauterize">
+					<option value="random">ランダム</option>
+					<option value="yes">Yes</option>
+					<option value="no">No</option>
+				</select>
+			</div>
+			<div>
+				<label for="ws_option_empty_dimention">エンプティディメンション</label>
+				<select id="ws_option_empty_dimention">
+					<option value="random">ランダム</option>
+					<option value="north">北</option>
+					<option value="south">南</option>
+				</select>
+			</div>
+			<div>
+				<label for="ws_option_heaven_liquid">ヘヴンリキッド</label>
+				<select id="ws_option_heaven_liquid">
+					<option value="random">ランダム</option>
+					<option value="yes">Yes</option>
+					<option value="no">No</option>
+				</select>
+			</div>
+			<div>
+				<label for="ws_option_thunderWing">サンダーウイング</label>
+				<select id="ws_option_thunderWing">
+					<option value="random">ランダム</option>
+					<option value="yes">Yes</option>
+					<option value="no">No</option>
+				</select>
+			</div>
 		</div>
 		<select name="icon" id="playerIconSelect">
 			<option value="whm" selected>白魔道士</option>
@@ -114,6 +165,7 @@
 		<script src="./enemy_e12s.js"></script>
 		<script src="./enemy_dwu.js"></script>
 		<script src="./enemy_eyes.js"></script>
+		<script src="./enemy_ws.js"></script>
 		<script src="./game.js"></script>
 		<script src="./player.js"></script>
 		<script type="module" src="./multi.js"></script>
