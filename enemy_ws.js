@@ -577,11 +577,11 @@ const EnemyGenWS = {
         // ヘヴンリキッド5発目
         EnemyGenWS.addHeavenLiquid();
       }),
-      event(19000, () => {
+      event(19500, () => {
         // エンプティディメンションAOE描画
         const [centerX, centerY] = EnemyGenWS.flags.emptyDimensionIsNorth ? EnemyGenWS.grinoLocationNorth : EnemyGenWS.grinoLocationSouth;
         const aoeDiv = Util.addDonut(centerX, centerY, 75, 1000);
-        Util.removeLater(aoeDiv, 1500);
+        Util.removeLater(aoeDiv, 1000);
       }),
       event(20000, () => {
         // エンプティディメンション着弾
