@@ -494,10 +494,10 @@ const EnemyGenWS = {
       event(8000, () => {
         //ツイスター発生
         for (const [x, y] of EnemyGenWS.twisterLocations) {
-          const circle = Util.addCircle(x, y, 20, "darkgreen");
+          const circle = Util.addCircle(x, y, 50, "darkgreen");
           Util.removeLater(circle, 5000);
           EnemyGenWS.activeAoEs.push(
-            Util.circleAoE(x, y, 20, "ツイスターに近づきすぎました", 5000)
+            Util.circleAoE(x, y, 50, "ツイスターに近づきすぎました", 5000)
           );
         }
       }),
