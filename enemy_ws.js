@@ -45,6 +45,7 @@ const EnemyGenWS = {
     EnemyGenWS.elementsToBeRemovedOnInit.forEach(it => it.remove());
     EnemyGenWS.elementsToBeRemovedOnInit = [];
     EnemyGenWS.addPartyList();
+    EnemyGenWS.addFieldMarkers();
     EnemyGenWS.addCastBar();
     EnemyGenWS.addCastBar2();
     EnemyGenWS.initTimeline();
@@ -199,6 +200,29 @@ const EnemyGenWS = {
     partyList.style.position = "absolute";
     EnemyGenWS.partyListDiv = partyList;
     fieldDom.appendChild(partyList);
+  },
+
+  addFieldMarkers: () => {
+    const markers = [
+      { x: 300, y:   0, name: "A" },
+      { x: 520, y:  80, name: "1" },
+      { x: 600, y: 300, name: "B" },
+      { x: 520, y: 520, name: "2" },
+      { x: 300, y: 600, name: "C" },
+      { x:  80, y: 520, name: "3" },
+      { x:   0, y: 300, name: "D" },
+      { x:  80, y:  80, name: "4" },
+    ];
+    const width = 50;
+    for (const m of markers) {
+      const element = document.createElement("img");
+      element.src = `img/field_marker_${m.name}.png`;
+      element.style.width = width;
+      element.style.position = "absolute";
+      element.style.left = m.x - width / 2;
+      element.style.top = m.y - width / 2;
+      fieldDom.appendChild(element);
+    }
   },
 
   getMyJob: () => {
