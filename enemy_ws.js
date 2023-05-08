@@ -547,16 +547,12 @@ const EnemyGenWS = {
           // カータライズ位置確定
           document.getElementById("target-cauterize").style.display = 'none';
           // カータライズの捨て場所チェック
-          const tolerance = 30;
-          const expectedAngle = EnemyGenWS.flags.emptyDimensionIsNorth ? -90 : 90;
-          const actualAngle = -Math.atan2(player.y - 300, player.x - 300) / Math.PI * 180; // X軸との角度 [-180, 180]
-          const diffAngle = (x, y) => { return (x - y + 540) % 360 - 180 }; // [-180, 180]
-          var diffToLeft = diffAngle((expectedAngle + tolerance), actualAngle); // [-180, 180] 
-          var diffToRight = diffAngle((expectedAngle - tolerance), actualAngle); // [-180, 180] 
-          EnemyGenWS.activeAoEs.push({
-            collision: () => diffToLeft < 0 || diffToRight > 0,
-            reason: `カータライズを変なところに捨てました(南北±30°許容)`
-          });
+          const y = EnemyGenWS.flags.emptyDimensionIsNorth ? 550 : 50;
+          EnemyGenWS.activeAoEs.push(
+            Util.donutAoE(300, y, 100, 1000, "カータライズを変なところに捨てました")
+          );
+          const aoeDiv = Util.addCircle(300, y, 100, "lightblue");
+          Util.removeLater(aoeDiv, 1000);
         }
       }),
       event(15000, () => {
