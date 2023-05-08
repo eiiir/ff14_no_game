@@ -580,14 +580,14 @@ const EnemyGenWS = {
       event(19000, () => {
         // エンプティディメンションAOE描画
         const [centerX, centerY] = EnemyGenWS.flags.emptyDimensionIsNorth ? EnemyGenWS.grinoLocationNorth : EnemyGenWS.grinoLocationSouth;
-        const aoeDiv = Util.addDonut(centerX, centerY, 100, 1000);
+        const aoeDiv = Util.addDonut(centerX, centerY, 75, 1000);
         Util.removeLater(aoeDiv, 1500);
       }),
       event(20000, () => {
         // エンプティディメンション着弾
         const [centerX, centerY] = EnemyGenWS.flags.emptyDimensionIsNorth ? EnemyGenWS.grinoLocationNorth : EnemyGenWS.grinoLocationSouth;
         EnemyGenWS.activeAoEs.push(
-          Util.donutAoE(centerX, centerY, 100 /*目分量*/, 1000, "エンプティディメンションを踏みました")
+          Util.donutAoE(centerX, centerY, 75 /*目分量*/, 1000, "エンプティディメンションを踏みました")
         );
 
         // サンダーウイング着弾
