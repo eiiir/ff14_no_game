@@ -41,6 +41,19 @@ const EnemyGenWS = {
         fieldDom.removeChild(dom);
       }
     }
+
+    // 床の模様
+    Util.addDonut(300, 300, Math.round(300/9), Math.round(300/9*2), "#ccc");
+    Util.addDonut(300, 300, Math.round(300/9*5), Math.round(300/9*6), "#ccc");
+    for (var i = 1; i < 9; i++) {
+      let width = [1,2,5,6].includes(i) ? 6 : 1;
+      let r = Math.round(300/9*i);
+      Util.strokeCircle(300, 300, r, width, "#777");
+    }
+    for (var j = 0; j < 24; j++) {
+      EnemyGenWS.addLine(j);
+    }
+
     EnemyGenWS.initFlags();
     EnemyGenWS.elementsToBeRemovedOnInit.forEach(it => it.remove());
     EnemyGenWS.elementsToBeRemovedOnInit = [];
@@ -50,6 +63,20 @@ const EnemyGenWS = {
     EnemyGenWS.addCastBar2();
     EnemyGenWS.initTimeline();
     speed = 1.7; // <- 適当 please fix
+  },
+
+  addLine: (rot) => {
+    const line = document.createElement("div");
+    line.style.width = `300px`;
+    line.style.height = `1px`;
+    line.style.backgroundColor = "#777";
+    line.style.left = `300px`;
+    line.style.top = `299px`;
+    line.style.display = "inline-block";
+    line.style.position = "absolute";
+    line.style.transformOrigin = "left center";
+    line.style.transform = `rotate(${rot * 15}deg)`;
+    fieldDom.appendChild(line);
   },
 
   initFlags: () => {
