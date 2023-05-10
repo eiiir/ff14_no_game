@@ -52,6 +52,7 @@ const EnemyGenWS = {
     }
     for (var j = 0; j < 24; j++) {
       EnemyGenWS.addLine(j);
+      EnemyGenWS.addLine2(j);
     }
 
     EnemyGenWS.initFlags();
@@ -68,7 +69,7 @@ const EnemyGenWS = {
   addLine: (rot) => {
     const line = document.createElement("div");
     line.style.width = `300px`;
-    line.style.height = `1px`;
+    line.style.height = `0.5px`;
     line.style.backgroundColor = "#777";
     line.style.left = `300px`;
     line.style.top = `299px`;
@@ -76,6 +77,31 @@ const EnemyGenWS = {
     line.style.position = "absolute";
     line.style.transformOrigin = "left center";
     line.style.transform = `rotate(${rot * 15}deg)`;
+    fieldDom.appendChild(line);
+  },
+
+  // 外側の短い線
+  addLine2: (rot) => {
+    const line = document.createElement("div");
+    line.style.width = `300px`;
+    line.style.height = `1px`;
+    line.style.backgroundColor = "rgba(0,0,0,0)";
+    line.style.left = `300px`;
+    line.style.top = `299px`;
+    line.style.display = "inline-block";
+    line.style.position = "absolute";
+    line.style.transformOrigin = "left center";
+    line.style.transform = `rotate(${rot * 15 + 7.5}deg)`;
+
+    const actualLine = document.createElement("div");
+    actualLine.style.width = `100px`;
+    actualLine.style.height = `0.5px`;
+    actualLine.style.backgroundColor = "#aaa";
+    actualLine.style.left = `200px`;
+    actualLine.style.display = "inline-block";
+    actualLine.style.position = "relative";
+    line.appendChild(actualLine);
+
     fieldDom.appendChild(line);
   },
 
