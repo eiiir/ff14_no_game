@@ -36,15 +36,16 @@ const Util = {
     };
   },
 
-  strokeCircle: (x, y, r) => {
+  strokeCircle: (x, y, r, borderWidth=1, color=`rgba(0, 0, 0, 1)`) => {
     const circle = document.createElement("div");
+    circle.style.boxSizing = "border-box";
     circle.style.width = `${r*2}px`;
     circle.style.height = `${r*2}px`;
     circle.style.backgroundColor = "rgba(0, 0, 0, 0)";
     circle.style.left = `${x - r}px`;
     circle.style.top = `${y - r}px`;
-    circle.style.borderRadius = `${r}px`;
-    circle.style.border = `1px solid rgba(0, 0, 0, 1)`;
+    circle.style.borderRadius = `50%`;
+    circle.style.border = `${borderWidth}px solid ${color}`;    
     circle.style.display = "inline-block";
     circle.style.position = "absolute";
     fieldDom.appendChild(circle);
@@ -78,12 +79,12 @@ const Util = {
     return img;
   },
 
-  addDonut: (x, y, rIn, rOut) => {
+  addDonut: (x, y, rIn, rOut, color="rgba(255, 110, 110, 0.5)") => {
     const circle = document.createElement("div");
     circle.style.width = `${rIn*2}px`;
     circle.style.height = `${rIn*2}px`;
     circle.style.backgroundColor = "rgba(0, 0, 0, 0)";
-    circle.style.border = `${rOut - rIn}px solid rgba(255, 110, 110, 0.5)`;
+    circle.style.border = `${rOut - rIn}px solid ${color}`;
     circle.style.left = `${x - rOut}px`;
     circle.style.top = `${y - rOut}px`;
     circle.style.borderRadius = `${rOut}px`;
