@@ -188,7 +188,9 @@ const endGame = () => {
 	gameActive = false;
 	initialized = false;
 	keyState.w = keyState.a = keyState.s = keyState.d = false;
-	alert(`You died. ${timerDom.innerText}`);
+	if (stage === 'normal') {
+		alert(`You died. ${timerDom.innerText}`);
+	}
 
 	// const stage = document.getElementById('stage').value;
 	// if (stage === 'normal') {

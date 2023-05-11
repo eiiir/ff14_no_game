@@ -25,6 +25,7 @@ const EnemyGenWS = {
   dots: [],
   flags: {},
   timeline: [],
+  heavenLiquidPos: [null, null, null, null, null],
 
   initialize: () => {
     EnemyGenWS.phase = 0;
@@ -125,6 +126,8 @@ const EnemyGenWS = {
 
     // Heaven liquid
     flags.heavenLiquidTarget = Math.random() < (1/8) ? true : false;
+
+    flags.AlterFlareTarget = Math.random() < (1/8) ? true : false;
 
     // Thunder wing
     flags.thunderWingTargets = Util.shuffle([...EnemyGenWS.partyMembers]).slice(0, 2);
@@ -535,8 +538,9 @@ const EnemyGenWS = {
           const aoeDiv = Util.addCircle(200, 560, 50, "lightblue");
           Util.removeLater(aoeDiv, 1000);
         } else if (EnemyGenWS.flags.skywardLeapTarget) {
-          EnemyGenWS.activeAoEs.push(Util.donutAoE(560, 150, 50, Util.tile(999), 'スカイワードリープをまき散らしました'));
-          const aoeDiv = Util.addCircle(560, 150, 50, "lightblue");
+          const expectedPos = Util.polar(300, -Math.PI / 8);
+          EnemyGenWS.activeAoEs.push(Util.donutAoE(expectedPos.x, expectedPos.y, 50, Util.tile(999), 'スカイワードリープをまき散らしました'));
+          const aoeDiv = Util.addCircle(expectedPos.x, expectedPos.y, 50, "lightblue");
           Util.removeLater(aoeDiv, 1000);
           document.getElementById("target-skywardleap").style.display = 'none';
         } else {
@@ -571,10 +575,10 @@ const EnemyGenWS = {
       event(8000, () => {
         //ツイスター発生
         for (const [x, y] of EnemyGenWS.twisterLocations) {
-          const circle = Util.addCircle(x, y, 50, "darkgreen");
+          const circle = Util.addCircle(x, y, 20, "darkgreen");
           Util.removeLater(circle, 5000);
           EnemyGenWS.activeAoEs.push(
-            Util.circleAoE(x, y, 50, "ツイスターに近づきすぎました", 5000)
+            Util.circleAoE(x, y, 20, "ツイスターに近づきすぎました", 5000)
           );
         }
       }),
@@ -584,20 +588,26 @@ const EnemyGenWS = {
       }),
       event(13000, () => {
         // アスカロンメルシー
-        const defaultAngle = { // X軸との角度 [-180, 180]
-          "Warrior": 60,
-          "Paladin": -120,
-          "WhiteMage": 150,
-          "Sage": -30,
-          "Reaper": -150,
-          "RedMage": -60,
-          "Summoner": 120,
-          "Dancer": 30,
-        }
         const tolerance = 15;
-        const expectedAngle = EnemyGenWS.flags.cautarizeTarget && EnemyGenWS.flags.emptyDimensionIsNorth ? -90 
-            : EnemyGenWS.flags.cautarizeTarget && !EnemyGenWS.flags.emptyDimensionIsNorth ? 90
-            : defaultAngle[EnemyGenWS.getMyJob()];
+
+        const merciAngle = () => {
+          if (EnemyGenWS.flags.cautarizeTarget) {
+            return EnemyGenWS.flags.emptyDimensionIsNorth ? -90 : 90;
+          }
+          if (EnemyGenWS.flags.skywardLeapTarget) {
+            return 45; // 右上
+          }
+          if (EnemyGenWS.flags.leftSpiralPearceTarget) {
+            return 0; // 右
+          }
+          if (EnemyGenWS.flags.rightSpiralPearceTarget) {
+            return -45; // 右下
+          }
+          return 180/12*11; // TODO: ランダム。ひとまず２番め固定
+        }
+
+        const expectedAngle = merciAngle();
+        console.log(expectedAngle);
         const actualAngle = -Math.atan2(player.y - 300, player.x - 300) / Math.PI * 180; // X軸との角度 [-180, 180]
         const diffAngle = (x, y) => { return (x - y + 540) % 360 - 180 }; // [-180, 180]
         var diffToLeft = diffAngle((expectedAngle + tolerance), actualAngle); // [-180, 180] 
@@ -607,19 +617,20 @@ const EnemyGenWS = {
           reason: `アスカロンメルシーをぶちまけました${EnemyGenWS.flags.cautarizeTarget ? "（カータライズ時）" : ""}`
         });
         // アスカロンメルシーのAOEを描画
-        const angles = {
-          ...defaultAngle,
-          [EnemyGenWS.getMyJob()]: actualAngle,
-          "Warrior": EnemyGenWS.flags.cautarizeTarget ? 60 : EnemyGenWS.flags.emptyDimensionIsNorth ? -90 : 90 // デフォで戦士にカータライズがつくことにしておく
-        }
-        for (const [job, angle] of Object.entries(angles)) {
+        const angles = [45, 0, -45, -90, 180/12*9, actualAngle, -180/12*9, -180/12*11]
+        for (const angle of angles) {
           const aoe = Util.addPiecut(300, 300, 500, (90 - angle + 540) % 360 - 180, 28);
           Util.removeLater(aoe, 500);
         }
+
+        // ヘヴンリキッドの位置予約
+        EnemyGenWS.heavenLiquidPos[0] = [player.x, player.y];
       }),
       event(14000, () => {
         // ヘヴンリキッド1発目
-        EnemyGenWS.addHeavenLiquid();
+        EnemyGenWS.addHeavenLiquid(0);
+        // アルターフレア1発目
+        EnemyGenWS.addAlterFlare(0);
         if (EnemyGenWS.flags.cautarizeTarget) {
           // カータライズ位置確定
           document.getElementById("target-cauterize").style.display = 'none';
@@ -636,19 +647,25 @@ const EnemyGenWS = {
         // エンプティディメンション詠唱開始
         EnemyGenWS.startCast("エンプティディメンション", 5000);
         // ヘヴンリキッド2発目
-        EnemyGenWS.addHeavenLiquid();
+        EnemyGenWS.addHeavenLiquid(1);
+        // アルターフレア2発目
+        EnemyGenWS.addAlterFlare(1);
       }),
       event(16000, () => {
         // ヘヴンリキッド3発目
-        EnemyGenWS.addHeavenLiquid();
+        EnemyGenWS.addHeavenLiquid(2);
+        // アルターフレア3発目
+        EnemyGenWS.addAlterFlare(2);
       }),
       event(17000, () => {
         // ヘヴンリキッド4発目
-        EnemyGenWS.addHeavenLiquid();
+        EnemyGenWS.addHeavenLiquid(3);
+        // アルターフレア4発目
+        EnemyGenWS.addAlterFlare(3);
       }),
       event(18000, () => {
         // ヘヴンリキッド5発目
-        EnemyGenWS.addHeavenLiquid();
+        EnemyGenWS.addHeavenLiquid(4);
       }),
       event(19500, () => {
         // エンプティディメンションAOE描画
@@ -708,16 +725,40 @@ const EnemyGenWS = {
         }
     }
   },
-  addHeavenLiquid: () => {
-    if (!EnemyGenWS.flags.heavenLiquidTarget) {
-      return;
-    }
-    const aoeRadius = 75; //目分量
-    const [aoeX, aoeY] = [player.x, player.y];
+  addHeavenLiquid: (n) => {
+    const aoeRadius = 80; //目分量
+    const [aoeX, aoeY] = EnemyGenWS.flags.heavenLiquidTarget ? 
+      EnemyGenWS.heavenLiquidPos[n] :
+      [
+        Util.polar(300, Math.PI/12*11),
+        Util.polar(300, Math.PI/12*11),
+        Util.polar(300 - 80, Math.PI/12*11),
+        Util.polar(300 - 80, Math.PI/12*11),
+        Util.polar(300 - 160, Math.PI/12*11)
+      ][n];
     const aoeDiv = Util.addCircle(aoeX, aoeY, aoeRadius);
     Util.removeLater(aoeDiv, 10000);
     setTimeout(() => {
       EnemyGenWS.activeAoEs.push(Util.circleAoE(aoeX, aoeY, aoeRadius, "ヘヴンリキッドを踏みました", 10000));
-    }, 1000);
+    }, 1800);
+    // 次のヘヴンリキッドの位置予約
+    EnemyGenWS.heavenLiquidPos[n+1] = [player.x, player.y];
+  },
+
+  addAlterFlare: (n) => {
+    const aoeRadius = 120;
+    const [aoeX, aoeY] = EnemyGenWS.flags.alterFlareTarget ? 
+      [player.x, player.y] :
+      [
+        Util.polar(300, -Math.PI/12*9),
+        Util.polar(300, -Math.PI/12*9),
+        Math.random() < 0.5 ? Util.polar(300 - 120, -Math.PI/12*9) : Util.polar(300 - 180, Math.PI), // 嫌がらせ
+        Math.random() < 0.5 ? Util.polar(300 - 120, -Math.PI/12*9) : Util.polar(300 - 180, Math.PI)  // 嫌がらせ
+      ][n];
+    const aoeDiv = Util.addCircle(aoeX, aoeY, aoeRadius);
+    Util.removeLater(aoeDiv, 2900);
+    setTimeout(() => {
+      EnemyGenWS.activeAoEs.push(Util.circleAoE(aoeX, aoeY, aoeRadius, "アルターフレアを踏みました", 500));
+    }, 2900);
   }
 };
