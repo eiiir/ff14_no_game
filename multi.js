@@ -240,12 +240,12 @@ window.addEventListener('load', () => {
     setInterval(() => {
         const playerDom = document.getElementById('player');
         const playerIconDom = document.getElementById("playerIcon");
-        console.log("sending: " + JSON.stringify({
-            left: playerDom.style.left,
-            top: playerDom.style.top,
-            image: playerIconDom.src,
-            name: nameInput.value,
-        }));
+        // console.log("sending: " + JSON.stringify({
+        //     left: playerDom.style.left,
+        //     top: playerDom.style.top,
+        //     image: playerIconDom.src,
+        //     name: nameInput.value,
+        // }));
         window.MultiPlay.broadcast({
             left: playerDom.style.left,
             top: playerDom.style.top,

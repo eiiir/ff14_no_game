@@ -166,6 +166,10 @@ const Util = {
       return t * 15;
   },
 
+  polar: (px, angle) => {
+    return [300 + px * Math.cos(angle), 300 + px * Math.sin(angle)];
+  },
+
   maintainLineBetween: (xyProvider1, xyProvider2, deleteFlagProvider) => {
     var lineDiv = undefined;
     const interval = setInterval(() => {
