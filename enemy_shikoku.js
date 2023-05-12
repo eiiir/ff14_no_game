@@ -21,6 +21,10 @@ const EnemyGenShikoku = {
   timeline: [],
   shinoSenkoku: undefined,
   gelickPos: undefined, // 0, 1, 2, 3
+  eyeLocations: [[300, 0], [520, 80], [600, 300], [520, 520], [300, 600], [80, 520], [0, 300], [80, 80]],
+  tordanLocation: undefined,
+  giantEyeLocation: undefined,
+  twisterLocation: undefined,
 
   initialize: () => {
     EnemyGenShikoku.phase = 0;
@@ -51,7 +55,12 @@ const EnemyGenShikoku = {
       EnemyGenShikoku.addLine2(j);
     }
 
+    // 死の宣告
     EnemyGenShikoku.shinoSenkoku = Util.shuffle([true, true, true, true, false, false, false, false]); // 0: 自分
+    // 邪眼の位置
+    EnemyGenShikoku.tordanLocation = Math.floor(Math.random() * 8);
+    EnemyGenShikoku.giantEyeLocation = (EnemyGenShikoku.tordanLocation + Math.floor(Math.random() * 3) + 3) % 8;
+
     EnemyGenShikoku.elementsToBeRemovedOnInit.forEach(it => it.remove());
     EnemyGenShikoku.elementsToBeRemovedOnInit = [];
     EnemyGenShikoku.initFlags();
@@ -367,10 +376,20 @@ const EnemyGenShikoku = {
         Util.removeLater(heavyImpactPrepElement, 8000);
         const gelickElement = Util.addImage('img/enemy.png', x, y, r, r);
         Util.removeLater(gelickElement, 11000);
+        Util.addImage("img/petri.png", EnemyGenShikoku.eyeLocations[EnemyGenShikoku.tordanLocation][0], EnemyGenShikoku.eyeLocations[EnemyGenShikoku.tordanLocation][1], 30, 30);
       }),
       event(2000, () => {
         // 巨大目玉 + 死の宣告付与
+        Util.addImage("img/petri.png", EnemyGenShikoku.eyeLocations[EnemyGenShikoku.giantEyeLocation][0], EnemyGenShikoku.eyeLocations[EnemyGenShikoku.giantEyeLocation][1], 30, 30);
         EnemyGenShikoku.addSenkokuDebuff();
+      }),
+      event(3000, () => {
+        // ヘヴィインパクト詠唱開始
+        EnemyGenShikoku.startCast("ヘヴィインパクト", 6000);
+      }),
+      event(5000, () => {
+        // 百雷など詠唱開始
+        EnemyGenShikoku.startCast2("ツイスターダイブ", 6000);
       }),
       event(9000, () => {
         // ヘヴィ1
@@ -386,6 +405,21 @@ const EnemyGenShikoku = {
         EnemyGenShikoku.activeAoEs.push(Util.donutAoE(x, y, r, 2*r, 'ヘヴィインパクト2を踏みました'));
         const heavyImpactEffectElement = Util.addDonut(x, y, r, 2*r);
         Util.removeLater(heavyImpactEffectElement, 200);
+
+        // カータライズ
+        const [darkScaleX, darkScaleY] = Util.polar(310, angle);
+        const cautarizeEffect = Util.addBoldLine(darkScaleX, darkScaleY, 300, 300, Math.round(300/9*4*2), 620);
+        Util.removeLater(cautarizeEffect, 200);
+
+        // ツイスターダイブ＆スピアオブハルオーネ
+        const [zephirinX, zephirinY] = Util.polar(310, angle + Math.PI/3);
+        const spearOfHaloneEffect = Util.addBoldLine(zephirinX, zephirinY, 300, 300, Math.round(300/9*2*2.5), 620);
+        Util.removeLater(spearOfHaloneEffect, 200);
+
+        const [vedrfolnirX, vedrfolnirY] = Util.polar(310, angle + Math.PI/3*2);
+        const twisterDiveEffect = Util.addBoldLine(vedrfolnirX, vedrfolnirY, 300, 300, Math.round(300/9*2*2.5), 620);
+        Util.removeLater(twisterDiveEffect, 200);
+
         // 百雷
         const senkokuMe = EnemyGenShikoku.shinoSenkoku[0];
         const myIndex = EnemyGenShikoku.partyMembers.indexOf(EnemyGenShikoku.getMyJob());
@@ -417,8 +451,18 @@ const EnemyGenShikoku = {
           Util.removeLater(HyakuraiEffectElement, 10000);
         }
       }),
-      event(12000, () => {
-        // ツイスター発生
+      event(12300, () => {
+        // ツイスター位置確定
+        EnemyGenShikoku.twisterLocation = [player.x, player.y];
+        const twisterElement = Util.addCircle(player.x, player.y, 20, "lightgreen");
+        Util.removeLater(twisterElement, 200);
+      }),
+      event(12700, () => {
+        // ツイスター有効化
+        const [x, y] = EnemyGenShikoku.twisterLocation;
+        const twisterElement = Util.addCircle(x, y, 20, "green");
+        Util.removeLater(twisterElement, 5000);
+        EnemyGenShikoku.activeAoEs.push(Util.circleAoE(x, y, 20, "ツイスターを踏みました"));
       }),
       event(13000, () => {
         // ヘヴィ3
