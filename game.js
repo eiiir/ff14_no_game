@@ -73,6 +73,10 @@ const onStageChange = (obj) => {
 		dwuJobSelect.style.visibility = "visible";
 		dwuRoleSelect.style.visibility = "hidden";
 		wsOptions.style.display = "initial";
+	} else if (obj.value == "dt") {
+		dwuJobSelect.style.visibility = "visible";
+		dwuRoleSelect.style.visibility = "hidden";
+		wsOptions.style.display = "none";
 	} else {
 		dwuJobSelect.style.visibility = "hidden";
 		dwuRoleSelect.style.visibility = "hidden";
@@ -257,6 +261,9 @@ const tick = (elapsedMilliSeconds) => {
 			break;
 		case 'ws':
 			EnemyGenWS.maybeAddEnemy();
+			break;
+		case 'dt':
+			EnemyGenDT.maybeAddEnemy();
 			break;
 		default:
 			EnemyGen.maybeAddEnemy(fieldDom);
