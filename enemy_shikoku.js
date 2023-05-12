@@ -25,6 +25,7 @@ const EnemyGenShikoku = {
   tordanLocation: undefined,
   giantEyeLocation: undefined,
   twisterLocation: undefined,
+  markers: undefined,
 
   initialize: () => {
     EnemyGenShikoku.phase = 0;
@@ -60,6 +61,8 @@ const EnemyGenShikoku = {
     // 邪眼の位置
     EnemyGenShikoku.tordanLocation = Math.floor(Math.random() * 8);
     EnemyGenShikoku.giantEyeLocation = (EnemyGenShikoku.tordanLocation + Math.floor(Math.random() * 3) + 3) % 8;
+    // プレステマーカー
+    EnemyGenShikoku.markers = Util.shuffle(['○', '○', '▽', '□']).concat(Util.shuffle(['×', '×', '▽', '□']))
 
     EnemyGenShikoku.elementsToBeRemovedOnInit.forEach(it => it.remove());
     EnemyGenShikoku.elementsToBeRemovedOnInit = [];
@@ -300,41 +303,6 @@ const EnemyGenShikoku = {
     }
     EnemyGenShikoku.addTimeline();
     EnemyGenShikoku.checkAlive();
-    EnemyGenShikoku.moveDots();
-  },
-
-  addDot: (fromX, fromY, toX, toY, duration, color = "purple") => {
-    const dot = Util.addCircle(fromX, fromY, 5, color);
-    dot.vx = (toX - fromX) / duration;
-    dot.vy = (toY - fromY) / duration;
-    const now = Date.now();
-    dot.createdAt = now;
-    dot.removeAt = now + duration;
-    dot.radius = 5;
-    dot.x = dot.fromX = 300;
-    dot.y = dot.fromY = 300;
-    EnemyGenShikoku.dots.push(dot);
-    return dot;
-  },
-
-  moveDots: () => {
-    // Looping backwards for popping items in the loop
-    var i = EnemyGenShikoku.dots.length - 1;
-    const now = Date.now();
-    while(i >= 0) {
-      const dot = EnemyGenShikoku.dots[i];
-      if (now > dot.removeAt) {
-        fieldDom.removeChild(dot);
-        EnemyGenShikoku.dots.splice(i, 1);
-      } else {
-        const elapsedTime = now - dot.createdAt;
-        dot.x = dot.vx * elapsedTime + dot.fromX;
-        dot.y = dot.vy * elapsedTime + dot.fromY;
-        dot.style.left = `${Math.floor(dot.x) - dot.radius }px`;
-        dot.style.top = `${Math.floor(dot.y) - dot.radius }px`;
-      }
-      i--;
-    }
   },
 
   addSenkokuDebuff: () => {
@@ -364,6 +332,13 @@ const EnemyGenShikoku = {
           r: Math.round(heavyImpactRadius),
           angle: heavyImpactAngle,
         };
+  },
+
+  sankaiIndex: () => {
+    const senkokuMe = EnemyGenShikoku.shinoSenkoku[0];
+    const myIndex = EnemyGenShikoku.partyMembers.indexOf(EnemyGenShikoku.getMyJob());
+    const nanbanme = EnemyGenShikoku.shinoSenkoku.slice(1, 1+myIndex).filter((s) => s === senkokuMe).length;
+    return nanbanme + (senkokuMe ? 0 : 4);
   },
 
   initTimeline: () => {
@@ -421,13 +396,6 @@ const EnemyGenShikoku = {
         Util.removeLater(twisterDiveEffect, 200);
 
         // 百雷
-        const senkokuMe = EnemyGenShikoku.shinoSenkoku[0];
-        const myIndex = EnemyGenShikoku.partyMembers.indexOf(EnemyGenShikoku.getMyJob());
-        console.log(myIndex);
-        console.log(senkokuMe);
-        console.log(EnemyGenShikoku.shinoSenkoku.slice(1, 1+myIndex));
-        const nanbanme = EnemyGenShikoku.shinoSenkoku.slice(1, 1+myIndex).filter((s) => s === senkokuMe).length; // 0-index
-        console.log(nanbanme);
         const sr = 280;
         const m = Math.PI/24;
         const sankai = [
@@ -438,10 +406,8 @@ const EnemyGenShikoku = {
           '左1', '右2', '右3', '右4',
           '右1', '左2', '左3', '左4',
         ];
-        const sankaiIndex = nanbanme + (senkokuMe ? 0 : 4); // 0-index
-        const expectedPos = sankai[sankaiIndex];
 
-        console.log(sankaiIndex);
+        const sankaiIndex = EnemyGenShikoku.sankaiIndex();
 
         for (var i = 0; i < 8; i++) {
           if (i === sankaiIndex) continue;
@@ -487,15 +453,69 @@ const EnemyGenShikoku = {
       }),
       event(19000, () => {
         // 鎖（○×△□）マーカー出現
+        const { angle } = EnemyGenShikoku.heavyImpact();
+        const markerSankaiLocations = [-3, -5, -7, -9, 3, 5, 7, 9].map((a) => Util.polar(300/9*2, angle + Math.PI/12*a));
+
+        console.log(EnemyGenShikoku.markers);
+
+        for (var i = 0; i < 8; i++) {
+          const pos = (i === EnemyGenShikoku.sankaiIndex()) ? [player.x, player.y] : markerSankaiLocations[i];
+          const markerElement = Util.addImage(`img/dragonSongWar/${EnemyGenShikoku.markers[i]}.png`, pos[0], pos[1], 40, 40);
+          Util.removeLater(markerElement, 2000);
+        }
       }),
       event(24000, () => {
         // フェイスアンムーブ・竜の邪眼着弾
+        const [expectedX, expectedY] = EnemyGenShikoku.markerExpectedPos();
+        console.log(expectedX, expectedY);
+        EnemyGenShikoku.activeAoEs.push(Util.donutAoE(expectedX, expectedY, 15, 300, `プレステの位置が違います`))
+        const safeZone = Util.addCircle(expectedX, expectedY, 15, "lightblue");
+        Util.removeLater(safeZone, 5000);
       }),
       event(27000, () => {
         //終わり
       }),
     ];
     EnemyGenShikoku.timeline = tl;
+  },
+
+  myIndex: ()=> {
+    return EnemyGenShikoku.partyMembers.indexOf(EnemyGenShikoku.getMyJob());
+  },
+
+  markerExpectedPos: () => {
+    const { angle } = EnemyGenShikoku.heavyImpact();
+
+    const sankaiRadius = 300/9*0.9;
+    const m = Math.PI/24;
+
+    const markerGoalAngles = [ // 他の長さ8の配列とインデックス非互換。単に右上→右下、左上→左下
+      +5, +10.5, +13.5, +19,
+      -5, -10.5, -13.5, -19,
+    ];
+
+    const goalIndex = () => {
+      const sankaiIndex = EnemyGenShikoku.sankaiIndex();
+      const senkokuMe = EnemyGenShikoku.shinoSenkoku[0];
+      const myMarker = EnemyGenShikoku.markers[sankaiIndex];
+      console.log(sankaiIndex, senkokuMe, myMarker);
+      if (myMarker === '○') {
+        return (EnemyGenShikoku.markers.indexOf('○') === sankaiIndex) ? 0: 7;
+      }
+      if (myMarker === '×') {
+        return (EnemyGenShikoku.markers.indexOf('×') === sankaiIndex) ? 3: 4;
+      }
+      if (myMarker === '▽') {
+        return senkokuMe ? 5 : 2;
+      }
+      if (myMarker === '□') {
+        return senkokuMe ? 6 : 1;
+      }
+    }
+
+    console.log(goalIndex());
+
+    return Util.polar(sankaiRadius, angle + m * markerGoalAngles[goalIndex()]);
   },
 
   addTimeline: () => {
