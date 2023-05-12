@@ -500,10 +500,10 @@ const EnemyGenShikoku = {
       const myMarker = EnemyGenShikoku.markers[sankaiIndex];
       console.log(sankaiIndex, senkokuMe, myMarker);
       if (myMarker === '○') {
-        return (EnemyGenShikoku.markers.indexOf('○') === sankaiIndex) ? 0: 7;
+        return (EnemyGenShikoku.markers.indexOf('○') === sankaiIndex) ? 0 : 7;
       }
       if (myMarker === '×') {
-        return (EnemyGenShikoku.markers.indexOf('×') === sankaiIndex) ? 3: 4;
+        return (EnemyGenShikoku.markers.indexOf('×') === sankaiIndex) ? 4 : 3;
       }
       if (myMarker === '▽') {
         return senkokuMe ? 5 : 2;
