@@ -76,7 +76,7 @@ const EnemyGenShikoku = {
   },
 
   initFlags: () => {
-    EnemyGenShikoku.gelickPos = 0;//Math.floor(Math.random() * 4); // 0,1,2,3
+    EnemyGenShikoku.gelickPos = 3;//Math.floor(Math.random() * 4); // 0,1,2,3
   },
 
   addLine: (rot) => {
