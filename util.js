@@ -166,8 +166,8 @@ const Util = {
       return t * 15;
   },
 
-  polar: (px, angle) => {
-    return [300 + px * Math.cos(angle), 300 + px * Math.sin(angle)];
+  polar: (r, angle) => {
+    return [300 + r * Math.cos(angle), 300 + r * Math.sin(angle)];
   },
 
   maintainLineBetween: (xyProvider1, xyProvider2, deleteFlagProvider) => {

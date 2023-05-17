@@ -321,17 +321,17 @@ const EnemyGenShikoku = {
 
   heavyImpact: () => {
     const heavyImpactInnerBound = 300 / 9;
-        const heavyImpactOuterBound = 300 / 9 * 6.3;
-        const heavyImpactCenter = (heavyImpactInnerBound + heavyImpactOuterBound) / 2;
-        const heavyImpactRadius = (heavyImpactOuterBound - heavyImpactInnerBound) / 2;
-        const heavyImpactAngle = Math.PI / 2 * EnemyGenShikoku.gelickPos;
-        const [heavyImpactX, heavyImpactY] = Util.polar(heavyImpactCenter, heavyImpactAngle);
-        return {
-          x: Math.round(heavyImpactX),
-          y: Math.round(heavyImpactY),
-          r: Math.round(heavyImpactRadius),
-          angle: heavyImpactAngle,
-        };
+    const heavyImpactOuterBound = 300 / 9 * 6.3;
+    const heavyImpactCenter = (heavyImpactInnerBound + heavyImpactOuterBound) / 2;
+    const heavyImpactRadius = (heavyImpactOuterBound - heavyImpactInnerBound) / 2;
+    const heavyImpactAngle = Math.PI / 2 * EnemyGenShikoku.gelickPos;
+    const [heavyImpactX, heavyImpactY] = Util.polar(heavyImpactCenter, heavyImpactAngle);
+    return {
+      x: Math.round(heavyImpactX),
+      y: Math.round(heavyImpactY),
+      r: Math.round(heavyImpactRadius),
+      angle: heavyImpactAngle,
+    };
   },
 
   sankaiIndex: () => {
@@ -371,7 +371,7 @@ const EnemyGenShikoku = {
         const { x, y, r } = EnemyGenShikoku.heavyImpact();
         EnemyGenShikoku.activeAoEs.push(Util.circleAoE(x, y, r, 'ヘヴィインパクトを踏みました'));
         const heavyImpactEffectElement = Util.addCircle(x, y, r);
-        Util.removeLater(heavyImpactEffectElement, 200);
+        Util.removeLater(heavyImpactEffectElement, 500);
       }),
       event(11000, () => {
         // ヘヴィ2, 百雷、カータ、ツイスターダイブ、スピアオブハルオーネ
@@ -379,7 +379,7 @@ const EnemyGenShikoku = {
         const { x, y, r, angle } = EnemyGenShikoku.heavyImpact();
         EnemyGenShikoku.activeAoEs.push(Util.donutAoE(x, y, r, 2*r, 'ヘヴィインパクト2を踏みました'));
         const heavyImpactEffectElement = Util.addDonut(x, y, r, 2*r);
-        Util.removeLater(heavyImpactEffectElement, 200);
+        Util.removeLater(heavyImpactEffectElement, 500);
 
         // カータライズ
         const [darkScaleX, darkScaleY] = Util.polar(310, angle);
@@ -435,21 +435,21 @@ const EnemyGenShikoku = {
         const { x, y, r } = EnemyGenShikoku.heavyImpact();
         EnemyGenShikoku.activeAoEs.push(Util.donutAoE(x, y, 2*r, 3*r, 'ヘヴィインパクト3を踏みました'));
         const heavyImpactEffectElement = Util.addDonut(x, y, 2*r, 3*r);
-        Util.removeLater(heavyImpactEffectElement, 200);
+        Util.removeLater(heavyImpactEffectElement, 500);
       }),
       event(15000, () => {
         // ヘヴィ4
         const { x, y, r } = EnemyGenShikoku.heavyImpact();
         EnemyGenShikoku.activeAoEs.push(Util.donutAoE(x, y, 3*r, 4*r, 'ヘヴィインパクト4を踏みました'));
         const heavyImpactEffectElement = Util.addDonut(x, y, 3*r, 4*r);
-        Util.removeLater(heavyImpactEffectElement, 200);
+        Util.removeLater(heavyImpactEffectElement, 500);
       }),
       event(17000, () => {
         // ヘヴィ5
         const { x, y, r } = EnemyGenShikoku.heavyImpact();
         EnemyGenShikoku.activeAoEs.push(Util.donutAoE(x, y, 4*r, 5*r, 'ヘヴィインパクト5を踏みました'));
         const heavyImpactEffectElement = Util.addDonut(x, y, 4*r, 5*r);
-        Util.removeLater(heavyImpactEffectElement, 200);
+        Util.removeLater(heavyImpactEffectElement, 500);
       }),
       event(19000, () => {
         // 鎖（○×△□）マーカー出現
