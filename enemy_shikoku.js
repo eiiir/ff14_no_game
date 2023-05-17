@@ -76,7 +76,7 @@ const EnemyGenShikoku = {
   },
 
   initFlags: () => {
-    EnemyGenShikoku.gelickPos = Math.floor(Math.random() * 4); // 0,1,2,3
+    EnemyGenShikoku.gelickPos = 0;//Math.floor(Math.random() * 4); // 0,1,2,3
   },
 
   addLine: (rot) => {
@@ -276,9 +276,9 @@ const EnemyGenShikoku = {
     const y = Util.pixelToMeter(player.y - 300);
 
     // 外周
-    if (x*x + y*y > 20*20) {
-        endGame();
-    }
+    // if (x*x + y*y > 20*20) {
+    //     endGame();
+    // }
 
     const remainingAoEs = [];
     for (const aoe of EnemyGenShikoku.activeAoEs) {
