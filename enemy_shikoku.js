@@ -398,13 +398,14 @@ const EnemyGenShikoku = {
         // 百雷
         const sr = 280;
         const m = Math.PI/24;
+
         const sankai = [
-          Util.polar(sr, angle-m*5), Util.polar(sr, angle+m*10.5), Util.polar(sr,angle+m*13.5), Util.polar(sr, angle+m*19),
-          Util.polar(sr, angle+m*5), Util.polar(sr, angle-m*10.5), Util.polar(sr,angle-m*13.5), Util.polar(sr, angle-m*19)
+          Util.polar(300/9*5.5, angle+m*12), Util.polar(sr, angle+m*5), Util.polar(sr,angle-m*5), Util.polar(300/9*5.5, angle-m*12),
+          Util.polar(sr, angle+m*12), Util.polar(sr, angle+m*19), Util.polar(sr,angle-m*19), Util.polar(sr, angle-m*12)
         ];
         const sankaiNatural = [
-          '左1', '右2', '右3', '右4',
-          '右1', '左2', '左3', '左4',
+          '右内', '右上', '右上', '左内',
+          '右外', '右下', '左下', '左外',
         ];
 
         const sankaiIndex = EnemyGenShikoku.sankaiIndex();
@@ -454,7 +455,7 @@ const EnemyGenShikoku = {
       event(19000, () => {
         // 鎖（○×△□）マーカー出現
         const { angle } = EnemyGenShikoku.heavyImpact();
-        const markerSankaiLocations = [-3, -5, -7, -9, 3, 5, 7, 9].map((a) => Util.polar(300/9*2, angle + Math.PI/12*a));
+        const markerSankaiLocations = [4.5, 1.5, -1.5, -4.5, 7.5, 10.5, -10.5, -7.5].map((a) => Util.polar(300/9*2, angle + Math.PI/12*a));
 
         console.log(EnemyGenShikoku.markers);
 
@@ -489,9 +490,9 @@ const EnemyGenShikoku = {
     const sankaiRadius = 300/9*0.9;
     const m = Math.PI/24;
 
-    const markerGoalAngles = [ // 他の長さ8の配列とインデックス非互換。単に右上→右下、左上→左下
-      +5, +10.5, +13.5, +19,
-      -5, -10.5, -13.5, -19,
+    const markerGoalAngles = [ // 他の長さ8の配列とインデックス非互換。単に12時から順に45度刻み
+      0, +6, +12, +18,
+      +24, -18, -12, -6,
     ];
 
     const goalIndex = () => {
@@ -500,16 +501,16 @@ const EnemyGenShikoku = {
       const myMarker = EnemyGenShikoku.markers[sankaiIndex];
       console.log(sankaiIndex, senkokuMe, myMarker);
       if (myMarker === '○') {
-        return (EnemyGenShikoku.markers.indexOf('○') === sankaiIndex) ? 0 : 7;
+        return (EnemyGenShikoku.markers.indexOf('○') === sankaiIndex) ? 2 : 6;
       }
       if (myMarker === '×') {
-        return (EnemyGenShikoku.markers.indexOf('×') === sankaiIndex) ? 4 : 3;
+        return (EnemyGenShikoku.markers.indexOf('×') === sankaiIndex) ? 4 : 0;
       }
       if (myMarker === '▽') {
-        return senkokuMe ? 5 : 2;
+        return senkokuMe ? 5 : 1;
       }
       if (myMarker === '□') {
-        return senkokuMe ? 6 : 1;
+        return senkokuMe ? 3 : 7;
       }
     }
 
