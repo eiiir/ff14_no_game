@@ -455,7 +455,7 @@ const EnemyGenShikoku = {
       event(19000, () => {
         // 鎖（○×△□）マーカー出現
         const { angle } = EnemyGenShikoku.heavyImpact();
-        const markerSankaiLocations = [4.5, 1.5, -1.5, -4.5, 7.5, 10.5, -10.5, -7.5].map((a) => Util.polar(300/9*2, angle + Math.PI/12*a));
+        const markerSankaiLocations = [7.5, 10.5, -10.5, -7.5, 4.5, 1.5, -1.5, -4.5].map((a) => Util.polar(300/9*2, angle + Math.PI/12*a));
 
         console.log(EnemyGenShikoku.markers);
 
